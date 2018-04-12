@@ -1,37 +1,32 @@
-## Welcome to GitHub Pages
+Hi我是火线兔
 
-You can use the [editor on GitHub](https://github.com/tobycroft/BiliHelper-for-Memory/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+这个代码是助手3-31日最后更新的代码，如你所知，我将助手停止了，说白了这事官方不允许
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+以上的代码是混合式开发的代码，基于APICLOUD，接口我已经于4-5日停运，所以本项目代码仅供参考
 
-### Markdown
+让你们感受下助手的架构是怎么处理这些数据的
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+正如我几个月前说的，如果不能做到不同的东西，那我们就不做
 
-```markdown
-Syntax highlighted code block
+当然我猜有很多朋友可能是想做一个类似的助手，过来查代码的，可以走了，我这个架构无法给你启发的，如果是为了找socket过来的也可以撤了，我原来在写的时候使用的是时光机方案，所以……它并不能帮上你什么
 
-# Header 1
-## Header 2
-### Header 3
+所以这个项目仅供纪念使用，请广大人民群众放心，请官方放心。
 
-- Bulleted
-- List
+这个项目不像脚本那样的，没有传播性，即使下载去了也并不会给官方添堵，所以我今天才能发出来给大家观赏一下当时助手是怎么做起来的。
 
-1. Numbered
-2. List
+关于最近有人盗版助手软件，我们也木有办法，SVN之前是公开的，人家拷走代码我也无能为力啊=。=
 
-**Bold** and _Italic_ and `Code` text
+呐不管咋样，我还在恢复B站直播间的途中，暂时如果要看我直播可以去各大动物园平台看了，反正搜索火线兔就有了，没有的也可以访问tuuz.cn（原来这个域名是指向B站的2333）。
 
-[Link](url) and ![Image](src)
-```
+说起直播真是无奈啊，我自己没在直播的时候宣传，更不允许别人在我直播间讨论这个软件，这最后还是封了，还真是锅从天上来挡都挡不住啊23333
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+而且如果你是助手的老用户你应该能感觉到其实里面有关于我直播的信息非常的少，很多人是到我直播间被封后才知道我在B站做直播的，你看这是不是很尴尬。
 
-### Jekyll Themes
+按照官方的意思，暂时不能解封咯，那只能静观其变啊也木有办法，我感觉很受伤啊
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/tobycroft/BiliHelper-for-Memory/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+哎不管了，反正现在这个项目BG那群人去弄了，我也就不关注了。
 
-### Support or Contact
+哦对了，B站已经招了机器学习的人来建模了，你们应该已经感受到阻力了，你问有没有解？hhh
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+
+最后劝诸位开发早日停手早登极乐好伐，Bye~
