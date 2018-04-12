@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>未开发</title>
+        <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+        <style>
+            .aui-tab-nav.aui-tab-border li.active {
+                background-color: #2980b9;
+                color: #fff;
+            }
+            .aui-tab-nav.aui-tab-border li {
+                /* width: 1%; */
+                overflow: hidden;
+                line-height: 43px;
+                color: #2980b9;
+                background-color: #ffffff;
+                border-color: #2980b9;
+                border-left: 1px solid #1abc9c;
+            }
+            .aui-tab-nav.aui-tab-border {
+                background-color: transparent;
+                border: 1px solid #2980b9;
+                border-radius: 3px;
+            }
+        </style>
+    </head>
+    <body>
+        <header></header>
+        <div class="aui-tab">
+            <ul class="aui-tab-nav aui-tab-border" id="">
+                <li class="active" onclick="change(this,'0')" sub="tv">
+                    小电视抽奖
+                </li>
+                <li onclick="change(this,'1')">
+                    活动抽奖
+                </li>
+                <li onclick="change(this,'2')">
+                    签到排行榜
+                </li>
+            </ul>
+        </div>
+        <div class="aui-aui-content" id="tib">
+            <ul class="aui-list-view" id="tv"></ul>
+            <ul class="aui-list-view" id="gift" style="display: none"></ul>
+            <!--<ul class="aui-list-view aui-grid-sixteen" id="list"></ul>-->
+            <ul class="aui-list-view" id="rank" style="display: none"></ul>
+        </div>
+    </body>
+</html>
+<script src="../script/api.js"></script>
+<script src="../script/common.js"></script>
+<script>
+    function change(data, num) {
+        $api.attr(document.getElementsByClassName("active")[0], 'class', '');
+        $api.attr(data, 'class', 'active');
+        $api.attr($api.byId('tv'), 'style', 'display: none;');
+        $api.attr($api.byId('gift'), 'style', 'display: none;');
+        $api.attr($api.byId('rank'), 'style', 'display: none;');
+        $api.attr(document.getElementsByClassName("aui-list-view")[num], 'style', '');
+    }
+
+    apiready = function() {
+        //  $api.fixStatusBar($api.dom('header'));
+        tv();
+        gift();
+        ranking();
+        api.setCustomRefreshHeaderInfo({
+            //          loadingImg : 'widget://image/refresh.png',
+            bgColor : '#ccc',
+            textColor : '#fff',
+            textDown : '下拉刷新...',
+            textUp : '松开刷新...'
+        }, function(ret, err) {
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            tv();
+            gift();
+            api.refreshHeaderLoadDone();
+        });
+        api.addEventListener({
+            name : 'reload'
+        }, function(ret, err) {
+            if (ret) {
+                tv();
+                gift();
+                ranking();
+            }
+        });
+    }
+    function tv() {
+        showProgress();
+        var gift = $api.byId('tv');
+        api.ajax({
+            url : URL() + '/index/api/v1/act/get_tv_list',
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    $api.html(gift, '');
+                    for (var i in ret.data) {
+                        var content = ret.data[i].date;
+                        $api.append(gift, __str_tv(content));
+                    }
+                } else {
+                    api.toast({
+                        msg : '礼物信息获取失败'
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function __str_tv(content) {
+        var str = '<li class="aui-list-view-cell aui-img">';
+        str += '<img class="aui-img-object aui-pull-left" src="http://static.hdslb.com/live-static/live-room/images/gift-section/mobilegift-static-icon/gift-1.png">';
+        str += '<div class="aui-img-body">';
+        str += '辣条x2';
+        str += '<p class="aui-ellipsis-2">';
+        str += '通过小电视获得礼物';
+        str += '</p>' + content + '</div></li>';
+        return str;
+    }
+
+    function gift() {
+        showProgress();
+        var gift = $api.byId('gift');
+        api.ajax({
+            url : URL() + '/index/api/v1/act/get_gift_list',
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    $api.html(gift, '');
+                    for (var i in ret.data) {
+                        var img = ret.data[i].gift_img;
+                        var title = ret.data[i].gift_desc;
+                        var content = ret.data[i].date;
+                        var roomid = ret.data[i].roomid;
+                        $api.append(gift, __str_gift(img, title, content, roomid));
+                    }
+                } else {
+                    api.toast({
+                        msg : '礼物信息获取失败'
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function __str_gift(img, title, content, roomid) {
+        var str = '<li class="aui-list-view-cell aui-img">';
+        str += '<img class="aui-img-object aui-pull-left" src="' + img + '">';
+        str += '<div class="aui-img-body">';
+        str += title;
+        str += '<p class="aui-ellipsis-2">';
+        //      str += '在直播间：' + roomid + '获得';
+        str += '</p>' + content + '</div></li>';
+        return str;
+    }
+
+    function list() {
+        showProgress();
+        var gift = $api.byId('list');
+        api.ajax({
+            url : URL() + '/index/app/v1/act/gift',
+            method : 'post',
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    for (var i in ret.data) {
+                        var id = ret.data[i].id;
+                        var img_src = ret.data[i].gif_url;
+                        var img = ret.data[i].img;
+                        var content = ret.data[i].name;
+                        $api.append(gift, __str_list(id, img_src, img, content));
+                    }
+                } else {
+                    api.toast({
+                        msg : '礼物信息获取失败'
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function __str_list(id, img_src, img, content) {
+        var str = '<li class="aui-col-xs-4 aui-text-center">';
+        str += '<img class="aui-iconfont aui-text-primary" src="' + img + '" width="35px"><p>';
+        str += content;
+        str += '</p></li>';
+        return str;
+    }
+
+    function ranking() {
+        showProgress();
+        var rank = $api.byId('rank');
+        var sharedModule = api.require('shareAction');
+        api.ajax({
+            url : URL() + '/index/app/v1/act/get_sign_rank',
+            method : 'get',
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    $api.html(rank, '');
+                    for (var i in ret.data) {
+                        var html = __strr(ret.data[i].rank, ret.data[i].uname, ret.data[i].date, ret.data[i].s_face);
+                        $api.append(rank, html);
+                    }
+                } else {
+                    api.alert({
+                        msg : '分享消息获取失败'
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function __strr(rank, name, date, img) {
+        var str = '<li class="aui-list-view-cell aui-img">';
+        str += '<img class="aui-img-object aui-pull-right" src="' + img + '">';
+        str += '<div class="aui-img-body"><strong>';
+        str += rank + '：' + name;
+        str += '</strong><p class="aui-ellipsis-2">签到时间：';
+        str += date;
+        str += '</p></div></li>';
+        return str;
+    }
+</script>

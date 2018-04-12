@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>title</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+        <style>
+            body {
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-info">
+            <a class="aui-pull-left" onclick="closepage()"> <span class="aui-iconfont aui-icon-left"></span> 返回 </a>
+            <div class="aui-title">
+                管理员设置
+            </div>
+        </header>
+        <div class="aui-form">
+            <div class="aui-input-row">
+                <label class="aui-input-addon">服务器名称</label>
+                <input type="text" class="aui-input" value="请先创建C2C服务器" id="name" disabled>
+            </div>
+            <div class="aui-tips aui-tips-danger">
+                <div class="aui-tips-content aui-ellipsis-1" >
+                    <i class="aui-iconfont aui-icon-warnfill"></i>
+                    直接输入对方的登陆帐号即可
+                </div>
+            </div>
+            <div class="aui-input-row">
+                <label class="aui-input-addon">管理员1</label>
+                <input type="text" class="aui-input" value="" id="admin1" placeholder="对方登陆帐号">
+            </div>
+            <div class="aui-input-row">
+                <label class="aui-input-addon">管理员2</label>
+                <input type="text" class="aui-input" value="" id="admin2" placeholder="对方登陆帐号">
+            </div>
+            <!--        	<div class="aui-input-row">
+            <span class="aui-input-addon">age</span>
+            <div class="aui-range">
+            <input type="range" class="aui-range-primary" value="30" max="100" min="1" step="1" id="range" />
+            </div>
+            </div>-->
+            <div class="aui-btn-row">
+                <div class="aui-btn aui-btn-success" onclick="server_settings();">
+                    确认
+                </div>
+                <div class="aui-btn aui-btn-warning" onclick="closepage();">
+                    取消
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="../../script/api.js"></script>
+<script src="../../script/common.js"></script>
+<script src="../../script/c2c.js"></script>
+<script>
+    apiready = function() {
+        $api.fixStatusBar($api.dom('header'));
+        api.setCustomRefreshHeaderInfo({
+            //          loadingImg : 'widget://image/refresh.png',
+            bgColor : '#ccc',
+            textColor : '#fff',
+            textDown : '下拉刷新...',
+            textUp : '松开刷新...'
+        }, function(ret, err) {
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            get_admin();
+            api.refreshHeaderLoadDone();
+        });
+        get_admin();
+    }
+    function get_admin() {
+        showProgress();
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/get_admin'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var dats = ret.data;
+                    for (var key in dats) {
+                        //                  $api.html($api.byId(key), dats[key]);
+                        //                  $api.attr($api.byId(key), 'value', dats[key]);
+                        if ($api.byId(key)) {
+                            $api.val($api.byId(key), dats[key]);
+                        }
+                    }
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function server_settings() {
+        showProgress();
+        var input = $api.domAll('input')
+        var obj = new Object();
+        for (var i in input) {
+            obj[input[i].id] = input[i].value;
+        }
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/set_admin'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                    data : obj
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var json = ret.data;
+                    alert(json);
+                    api.sendEvent({
+                        name : 'c2c'
+                    });
+                    closepage();
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+</script>

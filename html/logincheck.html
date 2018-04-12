@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>云API</title>
+        <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+        <style>
+            .empty {
+                text-align: center;
+                padding: 120px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-dark">
+            <div class="aui-pull-left" onclick="closepage()">
+                <span class="aui-iconfont aui-icon-left"></span> 返回
+            </div>
+            <div class="aui-title">
+                检查帐号是否掉线
+            </div>
+        </header>
+        <div class="aui-form">
+            <div class="aui-input-row">
+                <i class="aui-input-addon  aui-iconfont aui-icon-people"></i>
+                <input id="username" type="tel" class="aui-input" placeholder="请输入B站账号（通常是手机号）">
+            </div>
+            <div class="aui-btn-row">
+                <div class="aui-btn aui-btn-success" onclick="login()">
+                    确认
+                </div>
+                <div class="aui-btn aui-btn-warning" onclick="closepage()">
+                    取消
+                </div>
+            </div>
+        </div>
+        <div class="aui-aui-content" id="notice"></div>
+    </body>
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript">
+        apiready = function() {
+            $api.fixStatusBar($api.dom('header'));
+            api.setStatusBarStyle({
+                style : 'dark',
+                color : '#34495e'
+            });
+            var username = $api.byId('username');
+            if ($api.getStorage('username') && $api.getStorage('password')) {
+                $api.val(username, $api.getStorage('username'));
+            }
+            get_info();
+        }
+        function login() {
+            var username = $api.byId('username');
+            var password = $api.byId('password');
+            api.ajax({
+                url : 'https://bilibili.tuuz.cn/v1.php?action=login_check',
+                method : 'post',
+                data : {
+                    values : {
+                        username : $api.val(username),
+                    },
+                },
+                dataType : 'text'
+            }, function(ret, err) {
+                if (ret) {
+                    api.alert({
+                        msg : ret
+                    });
+                } else {
+                    api.alert({
+                        msg : JSON.stringify(err)
+                    });
+                }
+            });
+        }
+
+        function get_info() {
+            api.ajax({
+                url : 'http://bilibili.tuuz.cn:81/v1.php?action=notice',
+                method : 'post',
+                dataType : 'text'
+            }, function(ret, err) {
+                if (ret) {
+                    $api.html($api.byId('notice'), ret);
+                } else {
+                    api.alert({
+                        msg : JSON.stringify(err)
+                    });
+                }
+            });
+        }
+
+        function closepage() {
+            api.closeWin();
+        }
+    </script>
+</html>

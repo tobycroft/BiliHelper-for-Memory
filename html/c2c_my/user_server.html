@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>title</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+        <style>
+            body {
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-info">
+            <a class="aui-pull-left" onclick="closepage()"> <span class="aui-iconfont aui-icon-left"></span> 返回 </a>
+            <div class="aui-title">
+                服务器信息
+            </div>
+        </header>
+        <ul class="aui-list-view aui-in">
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-edit aui-bg-info"></i>服务器名称：<span id="name">请先加入服务器</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-shop aui-bg-success"></i>服务器主：<span id="username">请先加入服务器</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-emoji aui-bg-success"></i>管理员1：<span id="admin1">请先加入服务器</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-emoji aui-bg-success"></i>管理员2：<span id="admin2">请先加入服务器</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-like aui-bg-warning"></i>运行时间：<span id="time">请先加入服务器</span>分钟
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>是否公开：<span id="public">请先加入服务器</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>加入审核：<span id="join_verify">请先加入服务器</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>自动签到：<span id="autosign">请先加入服务器</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>每日签到间隔：<span id="sign_ratio">请先加入服务器</span>小时
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>用户操作间隔：<span id="user_ratio">请先加入服务器</span>ms(毫秒)
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>应援团签到：<span id="autoyinyuan">请先加入服务器</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>应援团间隔：<span id="yinyuan_ratio">请先加入服务器</span>小时
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>瓜子兑换硬币：<span id="silver2coin">请先加入服务器</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>硬币兑换间隔：<span id="silver2coin_delay">请先加入服务器</span>小时
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>是否抢电视：<span id="tv">请先加入服务器</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>电视间隔：<span id="tv_delay">请先加入服务器</span>ms(毫秒)
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>APP接口加入活动：<span id="huodong">请先加入服务器</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>APP热点活动间隔：<span id="huodong_delay">请先加入服务器</span>ms(毫秒)
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>PC接口加入活动：<span id="pchuodong">请先加入服务器</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>PC热点活动间隔：<span id="pchuodong_delay">请先加入服务器</span>ms(毫秒)
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>是否领经验：<span id="heart">请先加入服务器</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>经验间隔：<span id="heart_delay">请先加入服务器</span>秒
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>是否领瓜子：<span id="silver">请先加入服务器</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>领瓜子间隔：<span id="silver_delay">请先加入服务器</span>秒
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>随机延迟（重要）：<span id="auto_standby">请先加入服务器</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>用户乱序执行：<span id="shuffle">请先加入服务器</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>用户间隔随机化：<span id="auto_delay">请先加入服务器</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>延迟百分比：<span id="auto_delay_ratio">请先加入服务器</span>%
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>服务器上线时间：<span id="date">请先加入服务器</span>
+            </li>
+            <center>
+                <!--                <div class="aui-btn aui-btn-info aui-btn-block" onclick="join()" style="width: 90%;margin-top:20px;">
+                <span class="aui-iconfont aui-icon-roundcheck"></span>申请加入该服务器
+                </div>-->
+                <!--                <div class="aui-btn aui-btn-info aui-btn-block" onclick="chat()" style="width: 90%;margin-top:20px;">
+                <span class="aui-iconfont aui-icon-roundcheck"></span>联系服务器主
+                </div>-->
+            </center>
+        </ul>
+    </body>
+</html>
+<script src="../../script/api.js"></script>
+<script src="../../script/common.js"></script>
+<script src="../../script/c2c.js"></script>
+<script>
+    apiready = function() {
+        $api.fixStatusBar($api.dom('header'));
+        api.setCustomRefreshHeaderInfo({
+            //          loadingImg : 'widget://image/refresh.png',
+            bgColor : '#ccc',
+            textColor : '#fff',
+            textDown : '下拉刷新...',
+            textUp : '松开刷新...'
+        }, function(ret, err) {
+            server_info();
+            api.refreshHeaderLoadDone();
+        });
+        server_info();
+    }
+    function server_info() {
+        showProgress();
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/user_server'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret) {
+                    if (ret.code == '0') {
+                        var dats = ret.data;
+                        for (var key in dats) {
+                            if ($api.byId(key)) {
+                                $api.html($api.byId(key), dats[key]);
+                            }
+                        }
+                    } else if (ret.code == '-1') {
+                        logout();
+                    } else {
+                        api.toast({
+                            msg : ret.data
+                        });
+                    }
+                }
+            }
+            hideProgress();
+        });
+    }
+</script>

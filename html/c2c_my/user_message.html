@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>title</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+        <style>
+            body {
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-info">
+            <a class="aui-pull-left" onclick="closepage()"> <span class="aui-iconfont aui-icon-left"></span> 返回 </a>
+            <div class="aui-title">
+                用户消息
+            </div>
+        </header>
+        <div class="aui-btn aui-btn-block" onclick="clear_all();" style="display: none" id="clear">
+            清除全部消息
+        </div>
+        <ul class="aui-list-view" id="user_message_list">
+            <!--            <li class="aui-list-view-cell" data-win="list_arrow">
+            <div class="aui-arrow-right">
+            带有角标和箭头的列表
+            </div>
+            </li>
+            <li class="aui-list-view-cell" data-win="list_thumb">
+            <div class="aui-arrow-right">
+            带有角标和箭头的列表
+            </div>
+            </li>-->
+        </ul>
+        <div class="aui-tips" id="no_server">
+            <div class="aui-tips-content aui-ellipsis-1" >
+                <i class="aui-iconfont aui-icon-warnfill"></i>
+                当前没有消息
+            </div>
+        </div>
+    </body>
+</html>
+<script src="../../script/api.js"></script>
+<script src="../../script/common.js"></script>
+<script src="../../script/c2c.js"></script>
+<script>
+    apiready = function() {
+        $api.fixStatusBar($api.dom('header'));
+        api.setCustomRefreshHeaderInfo({
+            //          loadingImg : 'widget://image/refresh.png',
+            bgColor : '#ccc',
+            textColor : '#fff',
+            textDown : '下拉刷新...',
+            textUp : '松开刷新...'
+        }, function(ret, err) {
+            user_message_list();
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            api.refreshHeaderLoadDone();
+        });
+        user_message_list();
+        api.addEventListener({
+            name : 'message_list'
+        }, function(ret, err) {
+            user_message_list();
+        });
+    }
+    function user_message_list() {
+        showProgress();
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/user_message_list'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var dats = ret.data;
+                    $api.html($api.byId('user_message_list'), '');
+                    for (var key in dats) {
+                        var id = dats[key].id;
+                        var title = dats[key].title;
+                        $api.append($api.byId('user_message_list'), __msgrr(id, title));
+                    }
+                    if (dats.length > 0) {
+                        $api.attr($api.byId('no_server'), 'style', 'display: none');
+                        $api.attr($api.byId('clear'), 'style', '');
+                    } else {
+                        $api.attr($api.byId('clear'), 'style', 'display: none');
+                    }
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function clear_all() {
+        showProgress();
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/clear_message'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var dats = ret.data;
+                    api.toast({
+                        msg : dats
+                    });
+                    user_message_list();
+                    api.sendEvent({
+                        name : 'c2c'
+                    });
+                    closepage();
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function single_message(id) {
+        api.openWin({
+            name : 'single_message',
+            url : 'single_message.html',
+            pageParam : {
+                "id" : id
+            },
+        });
+    }
+
+    function __msgrr(id, title) {
+        var str = '<li class="aui-list-view-cell" data-win="list-image" onclick="single_message(' + id + ')"><div class="aui-arrow-right aui-ellipsis-1">';
+        str += title;
+        str += '</div></li>';
+        return str;
+    }
+</script>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>title</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+        <style>
+            body {
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-info">
+            <a class="aui-pull-left" onclick="closepage()"> <span class="aui-iconfont aui-icon-left"></span> 返回 </a>
+            <div class="aui-title">
+                消息
+            </div>
+        </header>
+        <div class="aui-aui-content">
+            <ul class="aui-list-view">
+                <li class="aui-list-view-cell aui-img">
+                    <div class="aui-img-body">
+                        <span id="title">图文列表</span>
+                        <p class="aui-ellipsis-2" id="content">
+                            图文列表缩略图在左边的样式，默认大小为80PX，文字介绍内容可以为一行也可以为两行，超出部分自动省略
+                        </p>
+                        <br>
+                        <div align="right">
+                            通知时间： <p class="aui-ellipsis-2" id="date"></p>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="aui-btn aui-btn-danger aui-btn-block" onclick="del()">
+            删除本条
+        </div>
+    </body>
+</html>
+<script src="../../script/api.js"></script>
+<script src="../../script/common.js"></script>
+<script src="../../script/c2c.js"></script>
+<script>
+    apiready = function() {
+        $api.fixStatusBar($api.dom('header'));
+        api.setCustomRefreshHeaderInfo({
+            //          loadingImg : 'widget://image/refresh.png',
+            bgColor : '#ccc',
+            textColor : '#fff',
+            textDown : '下拉刷新...',
+            textUp : '松开刷新...'
+        }, function(ret, err) {
+            user_message();
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            api.refreshHeaderLoadDone();
+        });
+        user_message();
+    }
+    function user_message() {
+        showProgress();
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/user_message'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                    id : api.pageParam['id']
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var dats = ret.data;
+                    for (var key in dats) {
+                        if ($api.byId(key)) {
+                            $api.html($api.byId(key), dats[key]);
+                        }
+                    }
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function del() {
+        showProgress();
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/delete_message'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                    data : api.pageParam
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var dats = ret.data;
+                    alert(dats);
+                    api.sendEvent({
+                        name : 'message_list'
+                    });
+                    api.sendEvent({
+                        name : 'c2c'
+                    });
+                    closepage();
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+</script>

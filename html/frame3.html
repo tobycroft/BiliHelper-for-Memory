@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>分享APP</title>
+        <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+        <style>
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-secuess">
+            <ul class="aui-list-view aui-grid-view" style="padding:0;margin: 0;">
+                <li class="aui-list-view-cell aui-img" id="main_pic" style="padding:0;margin: 0;line-height:0;" onclick="go_Login()">
+                    <img class="aui-img-object" src="../image/frame2/userinfo.jpg">
+                </li>
+            </ul>
+        </header>
+        <ul class="aui-list-view aui-in" style="padding:0;margin: 0;">
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-lock aui-bg-info"></i>帐号：<span id="account"></span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-lock aui-bg-info"></i>用户等级：<span id="user_level"></span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-lock aui-bg-info"></i>经验值：<span id="jinyan"></span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-emoji aui-bg-success"></i>签到情况：<span id="sign"></span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-emoji aui-bg-success"></i>应援团签到情况：<span id="yinyuan"></span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-emoji aui-bg-success"></i>签到次数：<span id="sign_times"></span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>获取银瓜子：<span id="guazi"></span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-like aui-bg-danger"></i>瓜子总额：<span id="silver_sum"></span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-info aui-bg-warning"></i>离线状态：<span id="guaji"></span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-shop aui-bg-warning"></i>离线时间剩余：<span id="offline_left"></span>分钟
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-shop aui-bg-warning"></i>使用时间剩余：<span id="guaji_left"></span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-shop aui-bg-info"></i>今日小电视抽奖：<span id="tv"></span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-shop aui-bg-info"></i>今日活动抽奖：<span id="huodong"></span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-shop aui-bg-info"></i>小电视总计：<span id="tv_all"></span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-shop aui-bg-info"></i>活动抽奖总计：<span id="huodong_all"></span>
+            </li>
+        </ul>
+        <ul class="aui-list-view aui-grid-view" style="padding:0;margin:-10px 0px;">
+            <li class="aui-list-view-cell aui-img" style="padding:0;margin: 0;">
+                <img class="aui-img-object" src="../image/frame2/userinfo_down.png">
+            </li>
+        </ul>
+    </body>
+</html>
+<script src="../script/api.js"></script>
+<script src="../script/common.js"></script>
+<script>
+    apiready = function() {
+        //  $api.fixStatusBar($api.dom('header'));
+        user_info();
+        refresh();
+        api.setCustomRefreshHeaderInfo({
+            //          loadingImg : 'widget://image/refresh.png',
+            bgColor : '#ccc',
+            textColor : '#fff',
+            textDown : '下拉刷新...',
+            textUp : '松开刷新...'
+        }, function(ret, err) {
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            user_info();
+            refresh();
+            api.refreshHeaderLoadDone();
+        });
+        api.addEventListener({
+            name : 'reload'
+        }, function(ret, err) {
+            if (ret) {
+                refresh();
+            }
+        });
+    }
+    function refresh() {
+        //      mainpic();
+        var sign = $api.byId('account');
+        $api.html(sign, '');
+        var sign = $api.byId('user_level');
+        $api.html(sign, '');
+        var sign = $api.byId('jinyan');
+        $api.html(sign, '');
+        var sign = $api.byId('sign');
+        $api.html(sign, '');
+        var sign = $api.byId('yinyuan');
+        $api.html(sign, '');
+        var sign = $api.byId('sign_times');
+        $api.html(sign, '');
+        var sign = $api.byId('sign_times');
+        $api.html(sign, '');
+        var sign = $api.byId('guazi');
+        $api.html(sign, '');
+        var sign = $api.byId('silver_sum');
+        $api.html(sign, '');
+        var sign = $api.byId('guaji');
+        $api.html(sign, '');
+        var sign = $api.byId('offline_left');
+        $api.html(sign, '');
+        var sign = $api.byId('guaji_left');
+        $api.html(sign, '');
+        var sign = $api.byId('tv');
+        $api.html(sign, '');
+        var sign = $api.byId('huodong');
+        $api.html(sign, '');
+        var sign = $api.byId('tv_all');
+        $api.html(sign, '');
+        var sign = $api.byId('huodong_all');
+        $api.html(sign, '');
+        if (login_check()) {
+            usersign();
+            usersign_times();
+            service_check();
+            service_left();
+            account();
+            user_level();
+            jinyan();
+            guazi();
+            guazi_count();
+            tv();
+            huodong();
+            offline_left();
+            yinyuan();
+        }
+    }
+
+    //  function mainpic() {
+    //      var mainpic = $api.byId('main_pic');
+    //      api.ajax({
+    //          url : URL() + '/index/app/v1/act/main_pic',
+    //          method : 'post',
+    //      }, function(ret, err) {
+    //          if (ret.code == '0') {
+    //              $api.html(mainpic, '<img class="aui-img-object" src="' + ret.data + '">');
+    //          } else {
+    //              api.alert({
+    //                  msg : '主图获取失败'
+    //              });
+    //          }
+    //      });
+    //  }
+    function usersign() {
+        showProgress();
+        var sign = $api.byId('sign');
+        api.ajax({
+            url : urladdress('/index/api/v1/act/user_sign'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    $api.html(sign, ret.data);
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : '获取签到信息失败'
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function yinyuan() {
+        showProgress();
+        var sign = $api.byId('yinyuan');
+        api.ajax({
+            url : urladdress('/index/api/v1/act/user_yinyuan'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    $api.html(sign, ret.data);
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : '获取签到信息失败'
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function usersign_times() {
+        showProgress();
+        var sign = $api.byId('sign_times');
+        api.ajax({
+            url : urladdress('/index/api/v1/act/user_sign_times'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    $api.html(sign, ret.data);
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : '获取签到次数失败'
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function service_check() {
+        showProgress();
+        var sign = $api.byId('guaji');
+        api.ajax({
+            url : urladdress('/index/api/v1/act/service_check'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    $api.html(sign, ret.data);
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : '获取挂机状态失败'
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function service_left() {
+        showProgress();
+        var sign = $api.byId('guaji_left');
+        api.ajax({
+            url : urladdress('/index/api/v1/act/service_left'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    $api.html(sign, ret.data);
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : '获取剩余时间失败'
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function offline_left() {
+        showProgress();
+        var sign = $api.byId('offline_left');
+        api.ajax({
+            url : urladdress('/index/api/v3/act/offline_time'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    $api.html(sign, ret.data);
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : '获取离线时间失败'
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function tv() {
+        showProgress();
+        var tv = $api.byId('tv');
+        var tv_all = $api.byId('tv_all');
+        api.ajax({
+            url : urladdress('/index/api/v5/act/tv'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    $api.html(tv, ret.data.today + '次');
+                    $api.html(tv_all, ret.data.all + '次');
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : '获取tv失败'
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function huodong() {
+        showProgress();
+        var huodong = $api.byId('huodong');
+        var huodong_all = $api.byId('huodong_all');
+        api.ajax({
+            url : urladdress('/index/api/v5/act/huodong'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    $api.html(huodong, ret.data.today + '次');
+                    $api.html(huodong_all, ret.data.all + '次');
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : '获取活动失败'
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function account() {
+        var sign = $api.byId('account');
+        $api.html(sign, get_userName());
+    }
+
+    function user_level() {
+        var sign = $api.byId('user_level');
+        $api.html(sign, $api.getStorage('user_level'));
+    }
+
+    function jinyan() {
+        var sign = $api.byId('jinyan');
+        $api.html(sign, $api.getStorage('user_level_color'));
+    }
+
+    function guazi() {
+        var sign = $api.byId('guazi');
+        $api.html(sign, $api.getStorage('silver'));
+    }
+
+    function guazi_count() {
+        showProgress();
+        var sign = $api.byId('silver_sum');
+        api.ajax({
+            url : urladdress('/index/api/v1/act/sum_silver'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    $api.html(sign, ret.data + '个');
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : '获取活动失败'
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+</script>

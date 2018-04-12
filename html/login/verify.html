@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+        <title>无标题文档</title>
+        <link rel="stylesheet" href="css/login.css"/>
+    </head>
+    <body>
+        <div class="login">
+            <div class="welcome"></div>
+            <div class="login-form" style="margin-top:0px;">
+                <center>
+                    <div class="login-inp" style="width:180px;height:50px;background-color: #ff605f;" onclick="recap()">
+                        <center id="verify"><img>
+                        </center>
+                    </div>
+                </center>
+                <div class="login-inp">
+                    <label>验证码</label>
+                    <input type="text" placeholder="请输入上方的验证码" id="veri" autofocus="true">
+                </div>
+                <div class="login-inp" onclick="login()">
+                    <a href="#">立即登录</a>
+                </div>
+            </div>
+            <div class="login-txt" onclick="closepage()">
+                <a href="#">返回上一页</a>
+                <a href="#">|</a>
+                <a href="#" onclick="info()">遇到问题？</a>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="../../script/api.js"></script>
+<script src="../../script/common.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        $api.fixStatusBar($api.dom('header'));
+        api.setStatusBarStyle({
+            style : 'dark',
+            color : '#34495e'
+        });
+        var signature = api.require('signature');
+        signature.md5({
+            data : dhi()
+        }, function(ret, err) {
+            if (ret.status) {
+                ref(ret.value);
+            } else {
+                alert(JSON.stringify(err));
+            }
+        });
+    }
+    function ss() {
+        api.ajax({
+            url : 'http://bili.api.tuuz.cn:81/index/index/aa?username=' + get_userName(),
+            dataType : 'text'
+        }, function(ret, err) {
+            alert(ret);
+        });
+    }
+
+    function recap() {
+        var signature = api.require('signature');
+        signature.md5({
+            data : dhi()
+        }, function(ret, err) {
+            if (ret.status) {
+                ref(ret.value);
+            } else {
+                alert(JSON.stringify(err));
+            }
+        });
+    }
+
+    function ref(data) {
+        var verify = $api.byId('verify');
+        $api.html(verify, '');
+        $api.html(verify, '<img src="http://bili.api.tuuz.cn:81/index/index/get_captcha?ret=' + second() + '&username=' + get_userName() + '&dhi=' + data + '">');
+    }
+
+    function login() {
+        var verify = $api.byId('veri');
+        api.ajax({
+            url : urladdress('/index/index/v1/act/login'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    password : $api.getStorage('password'),
+                    type : "2",
+                    verify : $api.val(verify),
+                    dt : $api.getStorage('dt')
+                },
+            },
+        }, function(ret, err) {
+            if (ret.code == '0') {
+                $api.setStorage('usertoken', ret.data);
+                api.toast({
+                    msg : ret.data
+                });
+                api.sendEvent({
+                    name : 'reload'
+                });
+                api.sendEvent({
+                    name : 'c2c'
+                });
+                //							api.sendEvent({
+                //								name: 'login_comp'
+                //							});
+                user_info();
+                closetoroot();
+            } else if (ret.code == '-105') {
+                $api.setStorage('verify', $api.val(verify));
+                api.alert({
+                    msg : ret.data
+                });
+                api.openWin({
+                    name : 'captcha',
+                    url : 'captcha.html'
+                });
+            } else {
+                api.alert({
+                    msg : ret.data
+                });
+            }
+        });
+    }
+
+    function closepage() {
+        api.closeWin();
+    }
+
+    function info() {
+        browser('http://app.tuuz.cn:81/info.html');
+    }
+</script>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>欢迎使用火线挂机助手</title>
+        <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+        <style>
+            body {
+                background-color: #3997e1;
+            }
+            .empty {
+                text-align: center;
+                padding: 120px 0;
+            }
+            .aui-content-padded {
+                background-color: #3997e1;
+                padding: 0px 10px 0px 10px;
+                margin: 0;
+                -webkit-overflow-scrolling: touch;
+            }
+            .aui-list-view-cell {
+                position: relative;
+                padding: 0px 15px;
+                overflow: hidden;
+                -webkit-transform-style: preserve-3d;
+                transform-style: preserve-3d;
+                -webkit-touch-callout: none;
+                background: #000;
+                color: #00ff12;
+            }
+            .aui-list-view-cell:after {
+                border-bottom: 0px solid #c8c7cc;
+                display: block;
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                -webkit-transform-origin: 0 0;
+                -webkit-transform: scale(1);
+                pointer-events: none;
+            }
+            .aui-list-view {
+                position: relative;
+                padding-left: 0;
+                margin-top: 0;
+                margin-bottom: 0;
+                list-style: none;
+                background-color: #fff;
+            }
+            .aui-iconfont {
+                margin-bottom: -35px;
+                z-index: 999;
+                background-color: #37c2f5;
+                opacity: 0.5;
+            }
+            .fl {
+                float: left;
+            }
+            .fr {
+                float: right;
+            }
+        </style>
+    </head>
+    <body>
+        
+        <div class="aui-btn aui-iconfont fl aui-icon-home" id="live" style="display: none;" onclick="live()"></div>
+        <div class="aui-btn aui-iconfont fr aui-icon-camera" onclick="camera()"></div>
+        <ul class="aui-list-view aui-grid-view" style="padding:0;margin-top: -100px;">
+            <li class="aui-list-view-cell aui-img" id="main_pic" style="padding:0;" onclick="go_Login()">
+                <img class="aui-img-object" src="../image/index/intro.jpg">
+            </li>
+        </ul>
+        <div class="aui-content-padded" style="padding-bottom: 0;">
+            <center style="color: #FFF">
+                <strong>监听控制</strong>
+            </center>
+        </div>
+        <div class="aui-content-padded">
+            <ul class="aui-list-view" id="listerner"></ul>
+        </div>
+        <div class="aui-btn aui-btn-block" id="gogo" style="width:47%;display: inline-block;margin: 1%;font-size:15px;background-color: #7ec5ff;opacity: 0.8;" onclick="gogogo()">
+            本地挂机
+        </div>
+        <div class="aui-btn aui-btn-block" id="nogo" style="width:47%;display: none;margin: 1%;font-size:15px;background-color: #7ec5ff;opacity: 0.8;" onclick="nogo()">
+            停止挂机
+        </div>
+        <div class="aui-btn aui-btn-block" id="offline" onclick="offline()" style="width:47%;display: inline-block;margin: 1%;font-size:15px;background-color: #7ec5ff;opacity: 0.8;">
+            离线挂机
+        </div>
+        <div class="aui-btn aui-btn-block" id="online" onclick="online()" style="width:47%;display: none;margin: 1%;font-size:15px;background-color: #7ec5ff;opacity: 0.8;">
+            停止离线
+        </div>
+    </body>
+</html>
+<script src="../script/api.js"></script>
+<script src="../script/common.js"></script>
+<script src="../script/base.js"></script>
+<script>
+    apiready = function() {
+        //  $api.fixStatusBar($api.dom('header'));
+        mainpic();
+        api.setCustomRefreshHeaderInfo({
+            //          loadingImg : 'widget://image/refresh.png',
+            bgColor : '#ccc',
+            textColor : '#fff',
+            textDown : '下拉刷新...',
+            textUp : '松开刷新...'
+        }, function(ret, err) {
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            //          alert($api.getStorage('newfunc'));
+            if ($api.getStorage('newfunc') == 'true') {
+                $api.attr($api.byId('live'), 'style', '');
+            } else {
+                $api.attr($api.byId('live'), 'style', 'display:none;');
+            }
+            api.refreshHeaderLoadDone();
+        });
+        var int = self.setInterval("add()", refresh_delay() * 1000);
+        if ($api.getStorage('newfunc') == 'true') {
+            $api.attr($api.byId('live'), 'style', '');
+        } else {
+            $api.attr($api.byId('live'), 'style', 'display:none;');
+        }
+    }
+    function add() {
+        var data = listerninfo();
+        var count = ($api.domAll($api.byId("listerner"), '.aui-list-view-cell').length);
+        if (count < 12) {
+            var num = 12 - count;
+            for (var i = 0; i < num; i++) {
+                $api.prepend($api.byId("listerner"), _str('<br>'));
+            }
+        }
+        for (var k in data) {
+            del();
+            $api.prepend($api.byId("listerner"), _str(data[k]));
+        }
+    }
+
+    function live() {
+        api.openWin({
+            name : 'live',
+            url : 'live/live.html'
+        });
+    }
+
+    function camera() {
+        var FNScanner = api.require('FNScanner');
+        FNScanner.openScanner({
+            autorotation : true
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.eventType == 'success') {
+                    api.ajax({
+                        url : urladdress('/index/api/v3/act/scanner'),
+                        method : 'post',
+                        data : {
+                            values : {
+                                username : get_userName(),
+                                token : get_userToken(),
+                                data : ret.content
+                            }
+                        }
+                    }, function(ret, err) {
+                        if (ret) {
+                            if (ret.code == '0') {
+                                alert(ret.data);
+                                api.sendEvent({
+                                    name : 'c2c'
+                                });
+                                api.sendEvent({
+                                    name : 'reload'
+                                });
+                            } else if (ret.code == '-1') {
+                                logout();
+                            } else {
+                                api.toast({
+                                    msg : ret.data
+                                });
+                            }
+                        }
+                    });
+                } else if (ret.eventType == 'fail') {
+                    api.toast({
+                        msg : '扫描内容故障'
+                    });
+                }
+            } else {
+                alert(JSON.stringify(err));
+            }
+        });
+    }
+
+    function _str(data, i) {
+        var str = '<li class="aui-list-view-cell">';
+        str += data;
+        str += '</li>';
+        return str;
+    }
+
+    function del() {
+        var cl = $api.last($api.byId("listerner"), 'li');
+        $api.remove(cl);
+    }
+
+    function mainpic() {
+        var mainpic = $api.byId('main_pic');
+        api.ajax({
+            url : URL() + '/index/app/v5/act/main_pic',
+            method : 'post',
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    $api.html(mainpic, '<img class="aui-img-object" src="' + ret.data + '">');
+                } else {
+                    api.alert({
+                        msg : '主图获取失败'
+                    });
+                }
+            }
+        });
+    }
+
+    function gogogo() {
+        if (login_check()) {
+            api.sendEvent({
+                name : 'login_comp'
+            });
+            $api.byId('gogo').style = "display:none;";
+            $api.byId('nogo').style = "width:47%;display: inline-block;margin: 1%;font-size:15px;background-color: #7ec5ff;opacity: 0.8;";
+        } else {
+            go_Login();
+        }
+    }
+
+    function nogo() {
+        if (login_check()) {
+            api.sendEvent({
+                name : 'logout'
+            });
+            $api.byId('nogo').style = "display:none;";
+            $api.byId('gogo').style = "width:47%;display: inline-block;margin: 1%;font-size:15px;background-color: #7ec5ff;opacity: 0.8;";
+        } else {
+            go_Login();
+        }
+    }
+
+    function offline() {
+        if (login_check()) {
+            offline_on();
+            nogo();
+            $api.byId('offline').style = "display:none;";
+            $api.byId('online').style = "width:47%;display: inline-block;margin: 1%;font-size:15px;background-color: #7ec5ff;opacity: 0.8;";
+        } else {
+            go_Login();
+        }
+    }
+
+    function online() {
+        if (login_check()) {
+            offline_off();
+            gogogo();
+            $api.byId('online').style = "display:none;";
+            $api.byId('offline').style = "width:47%;display: inline-block;margin: 1%;font-size:15px;background-color: #7ec5ff;opacity: 0.8;";
+        } else {
+            go_Login();
+        }
+    }
+</script>

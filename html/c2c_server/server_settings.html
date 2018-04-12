@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>title</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+        <style>
+            body {
+            }
+            .ipu {
+                width: 97% !important;
+                height: 200px;
+                background-color: #FAFAFC;
+                margin-bottom: 8px !important;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-info">
+            <a class="aui-pull-left" onclick="closepage()"> <span class="aui-iconfont aui-icon-left"></span> 返回 </a>
+            <div class="aui-title">
+                服务器设置
+            </div>
+        </header>
+        <div class="aui-btn aui-btn-block aui-btn-outlined" onclick="quick()">
+            快速码（LinuxC2C）
+        </div>
+        <br>
+        <div class="aui-card">
+            <div class="aui-form">
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">服务器名称</label>
+                    <input type="text" class="aui-input" value="加载中……" id="name">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">服务器说明</label>
+                </div>
+                <div class="aui-form ">
+                    <div class="aui-input-row">
+                        <i class="aui-input-addon"></i>
+                        <textarea class="aui-input ipu" placeholder="填写加入申请留言可以提高您的通过率哦~" id="info"></textarea>
+                    </div>
+                </div>
+                <!--<input type="text" class="aui-input" value="加载中……" id="info">-->
+                <div class="aui-tips aui-tips-danger">
+                    <div class="aui-tips-content aui-ellipsis-1" >
+                        <i class="aui-iconfont aui-icon-warnfill"></i>
+                        以下设定1是开0是关
+                    </div>
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">是否开启公网</label>
+                    <input type="text" class="aui-input" value="加载中……" id="public">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">加入审核</label>
+                    <input type="text" class="aui-input" value="加载中……" id="join_verify">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">服主QQ</label>
+                    <input type="text" class="aui-input" value="加载中……" id="qq">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">用户间隔(毫秒)</label>
+                    <input type="text" class="aui-input" value="加载中……" id="user_ratio">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">自动签到</label>
+                    <input type="text" class="aui-input" value="加载中……" id="autosign">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">签到间隔（小时）</label>
+                    <input type="text" class="aui-input" value="加载中……" id="sign_ratio">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">应援团签到</label>
+                    <input type="text" class="aui-input" value="加载中……" id="autoyinyuan">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">应援团间隔(小时)</label>
+                    <input type="text" class="aui-input" value="加载中……" id="yinyuan_ratio">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">瓜子兑换硬币</label>
+                    <input type="text" class="aui-input" value="加载中……" id="silver2coin">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">硬币兑换间隔(小时)</label>
+                    <input type="text" class="aui-input" value="加载中……" id="silver2coin_delay">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">领取经验</label>
+                    <input type="text" class="aui-input" value="加载中……" id="heart">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">经验间隔</label>
+                    <input type="text" class="aui-input" value="加载中……" id="heart_delay">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">领取瓜子</label>
+                    <input type="text" class="aui-input" value="加载中……" id="silver">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">瓜子间隔</label>
+                    <input type="text" class="aui-input" value="加载中……" id="silver_delay">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">领取电视</label>
+                    <input type="text" class="aui-input" value="加载中……" id="tv">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">电视领取延迟</label>
+                    <input type="text" class="aui-input" value="加载中……" id="tv_delay">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">APP通道领取活动</label>
+                    <input type="text" class="aui-input" value="加载中……" id="huodong">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">APP活动领取延迟</label>
+                    <input type="text" class="aui-input" value="加载中……" id="huodong_delay">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">PC通道领取活动</label>
+                    <input type="text" class="aui-input" value="加载中……" id="pchuodong">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">PC活动领取延迟</label>
+                    <input type="text" class="aui-input" value="加载中……" id="pchuodong_delay">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">随机延迟</label>
+                    <input type="text" class="aui-input" value="加载中……" id="auto_standby">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">乱序执行：</label>
+                    <input type="text" class="aui-input" value="加载中……" id="shuffle">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">用户间隔随机化</label>
+                    <input type="text" class="aui-input" value="加载中……" id="auto_delay">
+                </div>
+                <div class="aui-input-row">
+                    <label class="aui-input-addon">延迟百分比</label>
+                    <input type="text" class="aui-input" value="加载中……" id="auto_delay_ratio">
+                </div>
+                <!--        	<div class="aui-input-row">
+                <span class="aui-input-addon">age</span>
+                <div class="aui-range">
+                <input type="range" class="aui-range-primary" value="30" max="100" min="1" step="1" id="range" />
+                </div>
+                </div>-->
+                <div class="aui-btn-row">
+                    <div class="aui-btn aui-btn-success" onclick="server_settings();">
+                        确认
+                    </div>
+                    <div class="aui-btn aui-btn-warning" onclick="closepage();">
+                        取消
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="aui-aui-content">
+            <ul class="aui-list-view">
+                <li class="aui-list-view-cell aui-img">
+                    <div class="aui-img-body">
+                        助手403功能（下面那个）说明
+                        <p class="aui-ellipsis-4">
+                            403问题的意思是，例如你在帮A客户代挂，A客户自己又找了别人代挂或者他自己又开了PC助手，那么礼物就会被他的PC版先抢走（C2C是多用户队列的，抢礼物的速度肯定没有PC版助手快），因为礼物已经被抢了，你再去帮他抢这个ID的礼物（每个活动礼物或者小电视都有自己的ID），就会出现403礼物已经被领取的错误提示，可以不管，但是你的服务器资源将会被浪费，因为C2C助手多是放在服务器，所以服务器主没去看消息是不知道自己的客户是否多开的，所以，增加这个功能来提醒或者直接进行用户操作来避免服务器主资源浪费。
+                        </p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="aui-card">
+            <div class="aui-form">
+                <div class="aui-input-row">
+                    <span class="aui-input-addon">阀值（建议5-10太小会误报）</span>
+                    <input type="tel" class="aui-input" value="8" id="punish_value">
+                </div>
+                <div class="aui-input-row">
+                    <span class="aui-input-addon">客户多开自动T出</span>
+                    <input type="checkbox" class="aui-switch aui-switch-info aui-pull-right" id="punish_kick">
+                </div>
+                <div class="aui-input-row">
+                    <span class="aui-input-addon">客户多开提醒服主</span>
+                    <input type="checkbox" class="aui-switch aui-switch-info aui-pull-right" id="punish_alert_server">
+                </div>
+                <div class="aui-input-row">
+                    <span class="aui-input-addon">客户多开提醒客户</span>
+                    <input type="checkbox" class="aui-switch aui-switch-info aui-pull-right" id="punish_alert_user">
+                </div>
+                <div class="aui-input-row">
+                    <span class="aui-input-addon">客户多开时间惩罚</span>
+                    <input type="checkbox" class="aui-switch aui-switch-info aui-pull-right" id="punish_time_dec">
+                </div>
+                <div class="aui-input-row">
+                    <span class="aui-input-addon">天数减少（可以是0.x天的小数）</span>
+                    <input type="tel" class="aui-input" value="0" id="punish_day">
+                </div>
+                <div class="aui-btn-row">
+                    <div class="aui-btn aui-btn-block aui-btn-success" onclick="punish_settings()">
+                        确认
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="aui-card">
+            <div class="aui-form">
+                <div class="aui-aui-content">
+                    <ul class="aui-list-view">
+                        <li class="aui-list-view-cell aui-img">
+                            <div class="aui-img-body">
+                                节点人数升级申请
+                                <p class="aui-ellipsis-4">
+                                    请大家在确认服务器能支撑的情况下再申请，服务器人数增加请合理配置延迟，官网有算法，你可以设定的很小，但是我们推荐按照官网的算法来计算用户延迟+礼物延迟避免封IP，好，如果你已经确认好你的服务器了，请点击下方的按钮，你只有在可用人数小于5人的时候才能升级成功，请注意哦，每次申请成功后，人数上限增幅为20人。
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="aui-btn-row">
+                    <div class="aui-btn aui-btn-block aui-btn-success" onclick="upgrade_server()">
+                        确认升级
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="../../script/api.js"></script>
+<script src="../../script/common.js"></script>
+<script src="../../script/c2c.js"></script>
+<script>
+    apiready = function() {
+        $api.fixStatusBar($api.dom('header'));
+        api.setCustomRefreshHeaderInfo({
+            //          loadingImg : 'widget://image/refresh.png',
+            bgColor : '#ccc',
+            textColor : '#fff',
+            textDown : '下拉刷新...',
+            textUp : '松开刷新...'
+        }, function(ret, err) {
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            server_info();
+            api.refreshHeaderLoadDone();
+        });
+        server_info();
+    }
+    function server_info() {
+        showProgress();
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/my_server_info'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var dats = ret.data;
+                    for (var key in dats) {
+                        //                  $api.html($api.byId(key), dats[key]);
+                        //                  $api.attr($api.byId(key), 'value', dats[key]);
+                        if ($api.byId(key)) {
+                            $api.val($api.byId(key), dats[key]);
+                        }
+                    }
+                    var punish = dats['punish'];
+                    for (var key in punish) {
+                        if ( typeof punish[key] == 'boolean') {
+                            if ($api.byId(key)) {
+                                if (punish[key]) {
+                                    $api.attr($api.byId(key), 'checked', null);
+                                    $api.attr($api.byId(key), 'chk', true);
+                                } else {
+                                    $api.attr($api.byId(key), 'chk', true);
+                                }
+                            }
+                        } else {
+                            if ($api.byId(key)) {
+                                $api.val($api.byId(key), punish[key]);
+                            }
+                        }
+                    }
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function server_settings() {
+        showProgress();
+        var input = $api.domAll('input');
+        var obj = new Object();
+        for (var i in input) {
+            obj[input[i].id] = input[i].value;
+        }
+        obj['info']=$api.val($api.byId('info'));
+        //      console.log($api.jsonToStr(obj));
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/myserver_settings_upload'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                    data : obj
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var json = ret.data;
+                    alert(json);
+                    api.sendEvent({
+                        name : 'c2c'
+                    });
+                    closepage();
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function quick() {
+        showProgress();
+        var input = $api.domAll('input');
+        var obj = new Object();
+        for (var i in input) {
+            obj[input[i].id] = input[i].value;
+        }
+        //      console.log($api.jsonToStr(obj));
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/linux'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                    data : obj
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var json = ret.data;
+                    alert(json);
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function punish_settings() {
+        showProgress();
+        var input = $api.domAll('input');
+        var obj = new Object();
+        for (var i in input) {
+            if (input[i].value == 'on') {
+                if (input[i].checked == true) {
+                    obj[input[i].id] = true;
+                } else {
+                    obj[input[i].id] = false;
+                }
+            } else {
+                obj[input[i].id] = input[i].value;
+            }
+        }
+        //      console.log($api.jsonToStr(obj));
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/punish_upload'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                    data : obj
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var json = ret.data;
+                    alert(json);
+                    api.sendEvent({
+                        name : 'c2c'
+                    });
+                    closepage();
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+                if (err) {
+                    api.toast({
+                        msg : '设定错误'
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function upgrade_server() {
+        showProgress();
+        var input = $api.domAll('input');
+        var obj = new Object();
+        for (var i in input) {
+            if (input[i].value == 'on') {
+                if (input[i].checked == true) {
+                    obj[input[i].id] = true;
+                } else {
+                    obj[input[i].id] = false;
+                }
+            } else {
+                obj[input[i].id] = input[i].value;
+            }
+        }
+        //      console.log($api.jsonToStr(obj));
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/upgrade_server'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                    data : obj
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var json = ret.data;
+                    alert(json);
+                    api.sendEvent({
+                        name : 'c2c'
+                    });
+                    closepage();
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+                if (err) {
+                    api.toast({
+                        msg : '设定错误'
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+</script>

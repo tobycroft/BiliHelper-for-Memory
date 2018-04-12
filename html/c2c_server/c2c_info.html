@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>title</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+        <style>
+            body {
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-info">
+            <a class="aui-pull-left" onclick="closepage()"> <span class="aui-iconfont aui-icon-left"></span> 返回 </a>
+            <div class="aui-title">
+                C2C监控
+            </div>
+        </header>
+        <div class="aui-tips" id="no_server">
+            <div class="aui-tips-content aui-ellipsis-1" >
+                <i class="aui-iconfont aui-icon-warnfill"></i>
+                服务器暂时没有信息返回
+            </div>
+        </div>
+        <ul class="aui-list-view" id="info">
+            <li class="aui-list-view-cell">
+                服务器信息加载中……
+            </li>
+        </ul>
+    </body>
+</html>
+<script src="../../script/api.js"></script>
+<script src="../../script/common.js"></script>
+<script src="../../script/c2c.js"></script>
+<script>
+    apiready = function() {
+        $api.fixStatusBar($api.dom('header'));
+        api.setCustomRefreshHeaderInfo({
+            //          loadingImg : 'widget://image/refresh.png',
+            bgColor : '#ccc',
+            textColor : '#fff',
+            textDown : '下拉刷新...',
+            textUp : '松开刷新...'
+        }, function(ret, err) {
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            api.refreshHeaderLoadDone();
+            c2cinfo();
+        });
+        c2cinfo();
+    }
+    function c2cinfo() {
+        showProgress();
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/c2cinfo'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var dats = ret.data;
+                    $api.html($api.byId('info'), '');
+                    for (var i in dats) {
+                        $api.append($api.byId('info'), __strr(dats[i]));
+                    }
+                    if (dats.length > 0) {
+                        $api.attr($api.byId('no_server'), 'style', 'display: none');
+                    }
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function __strr(data) {
+        var str = '<li class="aui-list-view-cell">';
+        str += data
+        str += '</li>';
+        return str;
+    }
+</script>

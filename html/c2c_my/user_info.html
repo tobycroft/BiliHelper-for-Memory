@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>title</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+        <style>
+            body {
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-info">
+            <a class="aui-pull-left" onclick="closepage()"> <span class="aui-iconfont aui-icon-left"></span> 返回 </a>
+            <div class="aui-title">
+                服务器信息
+            </div>
+        </header>
+        <ul class="aui-list-view aui-in">
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-edit aui-bg-info"></i>您的帐号：<span id="username">请先加入一个C2C节点</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-edit aui-bg-info"></i>您的名称：<span id="name">请先加入一个C2C节点</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-edit aui-bg-info"></i>审核状态：<span id="agreed">请先加入一个C2C节点</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-shop aui-bg-success"></i>您的申请/加入日期：<span id="date">请先加入一个C2C节点</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-shop aui-bg-success"></i>到期日期：<span id="time">请先加入一个C2C节点</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-shop aui-bg-success"></i>剩余时间：<span id="left">请先加入一个C2C节点</span>
+            </li>
+            <center>
+                <div class="aui-btn aui-btn-info aui-btn-block" onclick="quit_server()" style="width: 90%;margin-top:20px;">
+                    <span class="aui-iconfont aui-icon-roundcheck"></span>退出服务器
+                </div>
+                <!--                <div class="aui-btn aui-btn-info aui-btn-block" onclick="chat()" style="width: 90%;margin-top:20px;">
+                <span class="aui-iconfont aui-icon-roundcheck"></span>联系服务器主
+                </div>-->
+            </center>
+        </ul>
+    </body>
+</html>
+<script src="../../script/api.js"></script>
+<script src="../../script/common.js"></script>
+<script src="../../script/c2c.js"></script>
+<script>
+    apiready = function() {
+        $api.fixStatusBar($api.dom('header'));
+        api.setCustomRefreshHeaderInfo({
+            //          loadingImg : 'widget://image/refresh.png',
+            bgColor : '#ccc',
+            textColor : '#fff',
+            textDown : '下拉刷新...',
+            textUp : '松开刷新...'
+        }, function(ret, err) {
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            user_info();
+            api.refreshHeaderLoadDone();
+        });
+        user_info();
+    }
+    function user_info() {
+        showProgress();
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/user_info'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var dats = ret.data;
+                    for (var key in dats) {
+                        if ($api.byId(key)) {
+                            $api.html($api.byId(key), dats[key]);
+                        }
+                    }
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function quit_server() {
+        showProgress();
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/out_server'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    alert(ret.data);
+                    api.sendEvent({
+                        name : 'c2c'
+                    });
+                    closepage();
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+</script>

@@ -1,0 +1,270 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="./css/aui.css" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>底部导航</title>
+        <link rel="stylesheet" type="text/css" href="./css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="./css/style.css"/>
+        <style>
+            header {
+                background-color: #f2f2f2;
+            }
+            header ul li {
+                height: 0px;
+                line-height: 0px;
+                text-align: center;
+                display: none;
+                color: #323237;
+                position: relative;
+                font-size: 0px;
+            }
+            header ul li.active {
+                display: block;
+            }
+            #footer {
+                background-color: #f2f2f2;
+            }
+            #footer ul li {
+                padding-top: 30px;
+                padding-bottom: 4px;
+                background: url() no-repeat center 1px;
+                background-size: auto 26px;
+                text-align: center;
+                font-size: 14px;
+            }
+            #footer ul li.active {
+                color: #6ab494;
+            }
+            #footer ul li:nth-child(1) {
+                background-image: url(./image/btn1_noactive.png);
+            }
+            #footer ul li:nth-child(2) {
+                background-image: url(./image/btn5_noactive.png);
+            }
+            #footer ul li:nth-child(3) {
+                background-image: url(./image/btn2_noactive.png);
+            }
+            #footer ul li:nth-child(4) {
+                background-image: url(./image/btn4_noactive.png);
+            }
+            #footer ul li:nth-child(5) {
+                background-image: url(./image/btn3_noactive.png);
+            }
+            #footer ul li:nth-child(1).active {
+                background-image: url(./image/btn1_active.png);
+            }
+            #footer ul li:nth-child(2).active {
+                background-image: url(./image/btn5_active.png);
+            }
+            #footer ul li:nth-child(3).active {
+                background-image: url(./image/btn2_active.png);
+            }
+            #footer ul li:nth-child(4).active {
+                background-image: url(./image/btn4_active.png);
+            }
+            #footer ul li:nth-child(5).active {
+                background-image: url(./image/btn3_active.png);
+            }
+            .flex-con {
+                overflow: auto
+            }
+            .aui-bar {
+                position: relative;
+                top: 0;
+                right: 0;
+                left: 0;
+                z-index: 10;
+                width: 100%;
+                background-color: #3498db;
+                color: #ffffff;
+                display: table;
+                height: 0px;
+                line-height: 0px;
+                min-height: 0px;
+                /*font-size: 18px;*/
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="wrap" class="flex-wrap flex-vertical">
+            <header class="aui-bar aui-bar-nav aui-bar-info">
+                <ul style="display: none;">
+                    <li class="border-b active" ></li>
+                    <li class="border-b" ></li>
+                    <li class="border-b" ></li>
+                    <li class="border-b" ></li>
+                    <li class="border-b" ></li>
+                </ul>
+            </header>
+            <div id="main" class="flex-con"></div>
+            <div id="footer" class="border-t">
+                <ul class="flex-wrap" >
+                    <li tapmode="hover" onclick="randomSwitchBtn(this);" class="flex-con active" >
+                        主页
+                    </li>
+                    <li tapmode="hover" onclick="randomSwitchBtn(this);" class="flex-con" >
+                        C2C
+                    </li>
+                    <li tapmode="hover" onclick="randomSwitchBtn(this);" class="flex-con" >
+                        礼物
+                    </li>
+                    <li tapmode="hover" onclick="randomSwitchBtn(this);" class="flex-con" >
+                        个人
+                    </li>
+                    <li tapmode="hover" onclick="randomSwitchBtn(this);" class="flex-con" >
+                        系统
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </body>
+</html>
+<script type="text/javascript" src="script/api.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+<!--<script type="text/javascript" src="script/aes.js"></script>-->
+<script type="text/javascript" src="script/base.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        $api.fixStatusBar($api.dom('header'));
+        api.setStatusBarStyle({
+            style : 'dark',
+            color : '#1874CD'
+        });
+        //      funIniGroup();
+        listerninfo_clear();
+        ckeck_version();
+        api.addEventListener({
+            name : 'login_comp'
+        }, function(ret, err) {
+            if (ret) {
+                if (login_check()) {
+                    Toga();
+                }
+            }
+        });
+        api.addEventListener({
+            name : 'logout'
+        }, function(ret, err) {
+            if (ret) {
+                Rever();
+            }
+        });
+        timeMachine();
+    }
+    function init_dt() {
+        var ajpush = api.require('ajpush');
+        ajpush.init(function(ret) {
+            if (ret && ret.status) {
+                ajpush.getRegistrationId(function(ret) {
+                    var registrationId = ret.id;
+                    $api.setStorage('dt', registrationId);
+                    api.toast({
+                        msg : '已连接服务器',
+                        duration : 2000,
+                        location : 'bottom'
+                    });
+                });
+            }
+        });
+    }
+
+    function ckeck_version() {
+        var username = $api.byId('username');
+        var password = $api.byId('password');
+        api.ajax({
+            url : urladdress('/index/app/v5/act/version'),
+            method : 'post',
+        }, function(ret, err) {
+            if (ret.data) {
+                if (ret.data > 5) {
+                    alert('您需要立即更新APP哦~');
+                    api.openApp({
+                        androidPkg : 'android.intent.action.VIEW',
+                        mimeType : 'text/html',
+                        uri : 'https://app.tuuz.cn'
+                    }, function(ret, err) {
+                    });
+                } else {
+                    api.ajax({
+                        url : urladdress('/index/app/v5/act/welcome'),
+                        method : 'post',
+                    }, function(ret, err) {
+                        if (ret.code == '0') {
+                            alert(ret.data);
+                            funIniGroup();
+                            init_dt();
+                        } else if (ret.code > '0') {
+                            funIniGroup();
+                            init_dt();
+                        } else if (err) {
+                            alert('服务器连接错误');
+                            alert(err);
+                        }
+                    });
+                }
+            } else {
+                alert('网络连接不是太顺畅，请重新打开APP');
+            }
+        });
+    }
+
+    function funIniGroup() {
+        var eHeaderLis = $api.domAll('header li'), frames = [];
+        for (var i = 0, len = eHeaderLis.length; i < len; i++) {
+            frames.push({
+                name : 'frame' + i,
+                url : './html/frame' + i + '.html',
+                bgColor : 'rgba(0,0,0,.2)',
+                bounces : false
+            })
+        }
+        var y = '';
+        var h = '';
+        if (api.systemType == "ios") {
+            y = $api.dom('header').offsetHeight;
+            h = $api.dom('#main').offsetHeight;
+        } else {
+            y = $api.dom('header').offsetHeight - 5;
+            h = $api.dom('#main').offsetHeight + 5;
+        }
+        api.openFrameGroup({
+            name : 'group',
+            scrollEnabled : false,
+            rect : {
+                x : 0,
+                y : y,
+                w : api.winWidth,
+                h : h,
+            },
+            index : 0,
+            frames : frames,
+            customRefreshHeader : 'UIPullRefresh'
+        }, function(ret, err) {
+        });
+    }
+
+    // 随意切换按钮
+    function randomSwitchBtn(tag) {
+        if (tag == $api.dom('#footer li.active'))
+            return;
+        var eFootLis = $api.domAll('#footer li'), eHeaderLis = $api.domAll('header li'), index = 0;
+        for (var i = 0, len = eFootLis.length; i < len; i++) {
+            if (tag == eFootLis[i]) {
+                index = i;
+            } else {
+                $api.removeCls(eFootLis[i], 'active');
+                $api.removeCls(eHeaderLis[i], 'active');
+            }
+        }
+        $api.addCls(eFootLis[index], 'active');
+        $api.addCls(eHeaderLis[index], 'active');
+        api.setFrameGroupIndex({
+            name : 'group',
+            index : index
+        });
+    }
+</script>

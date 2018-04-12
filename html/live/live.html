@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>title</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+        <style>
+            body {
+            }
+            .aui-img-object {
+                margin-top: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-info">
+            <a class="aui-pull-left" onclick="closepage()"> <span class="aui-iconfont aui-icon-left"></span> 返回 </a>
+            <div class="aui-title">
+                助手测试平台(双击全屏)
+            </div>
+        </header>
+        <div class="aui-content" id="chat">
+            <ul class="aui-user-view">
+                <li class="aui-user-view-cell aui-img">
+                    <img class="aui-img-object aui-pull-left" src="../../image/logo/c2c-small.jpg">
+                    <div class="aui-img-body">
+                        <span>测试人员<em>2018-12-32 01:01:01</em></span>
+                        <p class="aui-ellipsis-2">
+                            测试数据-测试数据-测试数据-测试数据-测试数据-测试数据-测试数据-测试数据-测试数据-测试数据-测试数据-44
+                        </p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!--        <footer class="aui-nav">
+        <ul class="aui-bar-tab">
+        <li class="active-dark">
+        <span class="aui-iconfont aui-icon-favor"></span>
+        <p>
+        栏目1
+        </p>
+        </li>
+        <li>
+        <span class="aui-iconfont aui-icon-mark"></span>
+        <p>
+        栏目2
+        </p>
+        </li>
+        <li>
+        <span class="aui-iconfont aui-icon-like"></span>
+        <p>
+        栏目3
+        </p>
+        </li>
+        <li>
+        <span class="aui-iconfont aui-icon-my"></span>
+        <p>
+        栏目4
+        </p>
+        </li>
+        </ul>
+        </footer>-->
+    </body>
+</html>
+<script src="../../script/api.js"></script>
+<script src="../../script/common.js"></script>
+<script src="../../script/c2c.js"></script>
+<script>
+    apiready = function() {
+        header = $api.dom('header');
+        $api.fixStatusBar($api.dom('header'));
+        videoPlayer = api.require('videoPlayer');
+        api.setCustomRefreshHeaderInfo({
+            //          loadingImg : 'widget://image/refresh.png',
+            bgColor : '#ccc',
+            textColor : '#fff',
+            textDown : '下拉刷新...',
+            textUp : '松开刷新...'
+        }, function(ret, err) {
+            play();
+            api.refreshHeaderLoadDone();
+        });
+        play();
+//      cb();
+        ready();
+    }
+    function ready() {
+        api.addEventListener({
+            name : 'keyback'
+        }, function(ret, err) {
+            if ($api.getStorage('fullscreen') == '1') {
+                $api.setStorage('fullscreen', '0');
+                videoPlayer.cancelFullScreen();
+                closepage();
+            } else {
+                videoPlayer.cancelFullScreen();
+                $api.setStorage('fullscreen', '1');
+            }
+        });
+    }
+
+    function play() {
+        showProgress();
+        api.ajax({
+            url : urladdress('/index/app/v5/act/live_addr'),
+            method : 'post',
+        }, function(ret, err) {
+            if (ret.data) {
+                if (ret.code == '0') {
+                    var videoPlayer = api.require('videoPlayer');
+                    videoPlayer.open({
+                        path : ret.data,
+                        scalingMode : 'scaleToFill',
+                        rect : {
+                            x : 0,
+                            y : header.offsetHeight,
+                            w : api.winWidth,
+                            h : api.winWidth * 1080 / 1920,
+                        }
+                    }, function(ret, err) {
+                        if (ret.status) {
+                            fullscreen();
+                            var hei = api.winWidth * 1080 / 1920;
+                            $api.attr($api.byId('chat'), 'style', "margin-top:" + hei + 'px');
+                        } else {
+                            videoPlayer.start();
+                        }
+                    });
+                } else {
+                    api.alert({
+                        msg : ret.data
+                    }, function(ret, err) {
+                        //coding...
+                    });
+                }
+            } else {
+                alert('网络连接不是太顺畅，请重新打开APP');
+            }
+            hideProgress();
+        });
+    }
+
+    function fullscreen() {
+        $api.setStorage('fullscreen', '1');
+        videoPlayer.addEventListener({
+            name : 'doubleClick'
+        }, function(ret, err) {
+            if (ret) {
+                if ($api.getStorage('fullscreen') == '1') {
+                    videoPlayer.fullScreen();
+                    $api.setStorage('fullscreen', '0');
+                } else {
+                    videoPlayer.cancelFullScreen();
+                    $api.setStorage('fullscreen', '1');
+                }
+            }
+        });
+    }
+
+    function cb() {
+        var UIChatBox = api.require('UIChatBox');
+        UIChatBox.open({
+            placeholder : '在此输入文字',
+            maxRows : 4,
+            emotionPath : 'widget://res/img/emotion',
+            texts : {
+                sendBtn : {
+                    title : '发送'
+                }
+            },
+            styles : {
+                inputBar : {
+                    borderColor : '#d9d9d9',
+                    bgColor : '#f2f2f2'
+                },
+                inputBox : {
+                    borderColor : '#B3B3B3',
+                    bgColor : '#FFFFFF'
+                },
+                recordBtn : {
+                    normalBg : '#c4c4c4',
+                    activeBg : '#999999',
+                    color : '#000',
+                    size : 14
+                },
+                indicator : {
+                    target : 'both',
+                    color : '#c4c4c4',
+                    activeColor : '#9e9e9e'
+                },
+                sendBtn : {
+                    titleColor : '#4cc518',
+                    bg : '#999999',
+                    activeBg : '#46a91e',
+                    titleSize : 14
+                }
+            },
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.eventType == 'show') {
+                } else if (ret.eventType == 'send') {
+                    alert(ret.msg);
+                }
+            } else {
+                //              alert(JSON.stringify(err));
+            }
+        });
+    }
+</script>

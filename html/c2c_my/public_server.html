@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>title</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+        <style>
+            body {
+            }
+            em {
+                margin-right: 30px;
+            }
+            .aui-img-object {
+                margin-top: 30px;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-info">
+            <a class="aui-pull-left" onclick="closepage()"> <span class="aui-iconfont aui-icon-left"></span> 返回 </a>
+            <div class="aui-title">
+                C2C服务器组
+            </div>
+        </header>
+        <div class="aui-content">
+            <ul class="aui-user-view" id="server_list">
+                <!--                <li class="aui-user-view-cell aui-img">
+                <img class="aui-img-object aui-pull-left" src="../../image/logo/c2c-small.jpg">
+                <div class="aui-img-body aui-arrow-right">
+                <span>服务器Tuuz</span>
+                <p class="aui-ellipsis-1">
+                在线时间：0分钟
+                </p>
+                <p class="aui-ellipsis-1">
+                审核：是
+                </p>
+                <p class="aui-ellipsis-1">
+                服务器人数/最大人数：17/20
+                </p>
+                <p class="aui-ellipsis-1">
+                服主QQ：123456789
+                </p>
+                </div>
+                </li>
+                <li class="aui-user-view-cell aui-img">
+                <img class="aui-img-object aui-pull-left" src="../../image/logo/c2c-small.jpg">
+                <div class="aui-img-body aui-arrow-right">
+                <span>服务器Tuuz</span>
+                <p class="aui-ellipsis-1">
+                在线时间：0分钟
+                </p>
+                </div>
+                </li>-->
+            </ul>
+            <div class="aui-tips" id="no_server">
+                <div class="aui-tips-content aui-ellipsis-1" >
+                    <i class="aui-iconfont aui-icon-warnfill"></i>
+                    当前没有服务器在线
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="../../script/api.js"></script>
+    <script src="../../script/common.js"></script>
+    <script src="../../script/c2c.js"></script>
+    <script>
+        apiready = function() {
+            $api.fixStatusBar($api.dom('header'));
+            api.setCustomRefreshHeaderInfo({
+                //          loadingImg : 'widget://image/refresh.png',
+                bgColor : '#ccc',
+                textColor : '#fff',
+                textDown : '下拉刷新...',
+                textUp : '松开刷新...'
+            }, function(ret, err) {
+                //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+                server_list();
+                api.refreshHeaderLoadDone();
+            });
+            server_list();
+        }
+        function server_list() {
+            showProgress();
+            api.ajax({
+                url : urladdress('/index/c2c/v1/act/online_server'),
+                method : 'post',
+                data : {
+                    values : {
+                        username : get_userName(),
+                        token : get_userToken(),
+                    }
+                }
+            }, function(ret, err) {
+                if (ret) {
+                    if (ret.code == '0') {
+                        var dats = ret.data;
+                        $api.html($api.byId('server_list'), '');
+                        for (var i in dats) {
+                            var id = dats[i].id;
+                            var name = dats[i].name;
+                            var time = dats[i].time;
+                            $api.append($api.byId('server_list'), __strr(dats[i]));
+                        }
+                        if (dats.length > 0) {
+                            $api.attr($api.byId('no_server'), 'style', 'display: none');
+                        }
+                    } else if (ret.code == '-1') {
+                        logout();
+                    } else {
+                        api.toast({
+                            msg : ret.data
+                        });
+                    }
+                }
+                hideProgress();
+            });
+        }
+
+        function open_server(data) {
+            data = Dec(data);
+            api.openWin({
+                name : 'server_info',
+                url : 'server_info.html',
+                pageParam : data,
+                allowEdit : true,
+            });
+        }
+
+        function __strr(data) {
+            var str = '<li class="aui-user-view-cell aui-img" onclick="open_server(\'' + Enc($api.jsonToStr(data)) + '\')"><img class="aui-img-object aui-pull-left" src="../../image/logo/c2c-small.jpg"><div class="aui-img-body aui-arrow-right">'
+            str += '<span>' + data.name + '</span>'
+            str += '<p class="aui-ellipsis-1">已经运行：' + data.time + '分钟</p>'
+            str += '<p class="aui-ellipsis-1">加入审核：' + data.join_verify + '</p>'
+            str += '<p class="aui-ellipsis-1" style="color : ' + data.color + '">服务器人数/最大人数：' + data.num + '/' + data.maxnum + '</p>'
+            str += '<p class="aui-ellipsis-1">连接API服务器：' + data.ip + '</p>'
+            str += '<p class="aui-ellipsis-1">API延迟：' + data.ping + '</p>'
+            str += '<p class="aui-ellipsis-1">服务器版本：' + data.version + '</p>'
+            str += '<p class="aui-ellipsis-1">服主QQ：' + data.qq + '</p></div></li>'
+            return str;
+        }
+    </script>

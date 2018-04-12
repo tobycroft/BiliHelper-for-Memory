@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>未开发</title>
+        <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+        <style>
+            .aui-bar {
+                position: relative;
+                top: 0;
+                right: 0;
+                left: 0;
+                z-index: 10;
+                width: 100%;
+                color: #ffffff;
+                display: table;
+                min-height: 25px;
+                line-height: 25px;
+                font-size: 16px;
+                text-align: center;
+            }
+            .aui-bar1 {
+                position: relative;
+                top: 0;
+                right: 0;
+                left: 0;
+                z-index: 10;
+                width: 100%;
+                color: #ffffff;
+                display: table;
+                min-height: 40px;
+                line-height: 40px;
+                font-size: 16px;
+                text-align: center;
+            }
+            .aui-list-view {
+                position: relative;
+                padding-left: 0;
+                margin-top: 0;
+                margin-bottom: 0px;
+                list-style: none;
+                background-color: #fff;
+            }
+            .aui-grid-sixteen li {
+                float: left;
+                position: relative;
+                padding: 15px 10px;
+            }
+            .aui-grid-sixteen li:after {
+                display: block;
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                -webkit-transform-origin: 0 0;
+                -webkit-transform: scale(1);
+                border-left: 0px solid #c8c7cc;
+                border-bottom: 0px solid #c8c7cc;
+            }
+            .activity {
+                margin: 0 10px;
+            }
+            .activity li {
+                padding: 15px 0;
+                background-size: 8px;
+                background-repeat: no-repeat;
+                background-position: right;
+                background-image: url("../image/setting_cell_arrow@2x.png");
+                border-bottom: 1px solid #F6F6F6;
+            }
+            .activity li:last-child {
+                border-bottom: none;
+            }
+            .subtitle {
+                font-size: 16px;
+                margin-left: 10px;
+            }
+            .tag {
+                color: #FFFFFF;
+                padding: 2px;
+                font-size: 13px;
+                border-radius: 2px;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar1 aui-bar-nav aui-bar-info">
+            <div class="aui-title">
+                C2C加入节点网络信息
+            </div>
+        </header>
+        <ul class="aui-list-view aui-in">
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>节点状态：<span id="stat" class="aaa">未加入任何节点</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>节点版本：<span id="version" class="aaa">未加入任何节点</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>节点API：<span id="ip" class="aaa">未加入任何节点</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>API延迟：<span id="ping" class="aaa">未加入任何节点</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-edit aui-bg-info"></i>C2C网络：<span id="name" class="aaa">未加入任何节点</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-emoji aui-bg-success"></i>到期时间：<span id="left" class="aaa">未加入任何节点</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-like aui-bg-warning"></i>节点拥有者：<span id="own" class="aaa">未加入任何节点</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-shop aui-bg-success"></i>加入审核：<span id="agreed" class="aaa">未加入任何节点</span>
+            </li>
+        </ul>
+        <header class="aui-bar aui-bar-nav aui-bar-primary">
+            <div class="aui-title">
+                C2C个人控制面板
+            </div>
+        </header>
+        <ul class="aui-grid-sixteen">
+            <li class="aui-col-xs-3 aui-text-center" onclick="open_c2c_my('public_server');">
+                <span class="aui-iconfont aui-icon-discover aui-text-info"></span>
+                <p>
+                    C2C公网
+                </p>
+            </li>
+            <li class="aui-col-xs-3 aui-text-center" onclick="open_c2c_my('user_server');">
+                <span class="aui-iconfont aui-icon-form aui-text-warning"></span>
+                <p>
+                    服务器信息
+                </p>
+            </li>
+            <li class="aui-col-xs-3 aui-text-center" onclick="open_c2c_my('user_info');">
+                <span class="aui-iconfont aui-icon-profile aui-text-warning"></span>
+                <p>
+                    个人信息
+                </p>
+            </li>
+            <li class="aui-col-xs-3 aui-text-center" onclick="open_c2c_my('user_message');">
+                <span class="aui-iconfont aui-icon-send aui-text-danger"></span>
+                <p>
+                    消息
+                </p>
+            </li>
+        </ul>
+        <header class="aui-bar aui-bar-nav aui-bar-danger">
+            <div class="aui-title">
+                C2C我的服务器
+            </div>
+        </header>
+        <ul class="aui-grid-sixteen">
+            <li class="aui-col-xs-4 aui-text-center" onclick="open_c2c_server('server_settings');">
+                <span class="aui-iconfont aui-icon-cascades aui-text-dark"></span>
+                <p>
+                    服务器设置
+                </p>
+            </li>
+            <li class="aui-col-xs-4 aui-text-center" onclick="open_c2c_server('admin_settings');">
+                <span class="aui-iconfont aui-icon-service aui-text-dark"></span>
+                <p>
+                    管理员设置
+                </p>
+            </li>
+            <li class="aui-col-xs-4 aui-text-center" onclick="open_c2c_server('user_verify');">
+                <span class="aui-iconfont aui-icon-filter aui-text-pink"></span>
+                <p>
+                    用户审核
+                </p>
+            </li>
+            <li class="aui-col-xs-4 aui-text-center" onclick="open_c2c_server('user_control');">
+                <span class="aui-iconfont aui-icon-footprint aui-text-dark"></span>
+                <p>
+                    用户操作
+                </p>
+            </li>
+            <li class="aui-col-xs-4 aui-text-center" onclick="open_c2c_server('c2c_info');">
+                <span class="aui-iconfont aui-icon-info aui-text-dark"></span>
+                <p>
+                    C2C监控
+                </p>
+            </li>
+        </ul>
+        <header class="aui-bar aui-bar-nav aui-bar-dark">
+            <div class="aui-title">
+                近期消息（5条）
+            </div>
+        </header>
+        <ul class="activity" id="message_list">
+            <!--            <li>
+            <span class="tag" style="background-color: #FB000D;">tuuz</span>
+            <span class="subtitle">tuuz-bilibili</span>
+            </li>-->
+        </ul>
+    </body>
+</html>
+<script src="../script/api.js"></script>
+<script src="../script/common.js"></script>
+<script src="../script/c2c.js"></script>
+<script>
+    apiready = function() {
+        //  $api.fixStatusBar($api.dom('header'));
+        api.setCustomRefreshHeaderInfo({
+            //          loadingImg : 'widget://image/refresh.png',
+            bgColor : '#ccc',
+            textColor : '#fff',
+            textDown : '下拉刷新...',
+            textUp : '松开刷新...'
+        }, function(ret, err) {
+            refresh();
+            api.refreshHeaderLoadDone();
+        });
+        refresh();
+        api.addEventListener({
+            name : 'c2c'
+        }, function(ret, err) {
+            refresh();
+        });
+    }
+    function refresh() {
+        showProgress();
+        index();
+        user_message_index();
+        hideProgress();
+    }
+
+    function open_c2c_my(page, param) {
+        param = Dec(param);
+        api.openWin({
+            name : page,
+            url : 'c2c_my/' + page + '.html',
+            pageParam : param,
+        });
+    }
+
+    function open_c2c_server(page, param) {
+        param = Dec(param);
+        api.openWin({
+            name : page,
+            url : 'c2c_server/' + page + '.html',
+            pageParam : param,
+        });
+    }
+
+    function index() {
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/index'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var dats = ret.data;
+                    for (var key in dats) {
+                        if ($api.byId(key)) {
+                            $api.html($api.byId(key), dats[key]);
+                        }
+                    }
+                } else if (ret.code == '-1') {
+                    var dom = $api.domAll('.aaa');
+                    for (var i in dom) {
+                        if (dom[i]) {
+                            dom[i].innerHTML = '未加入任何节点.';
+                        }
+                    }
+                    logout();
+                } else {
+                    var dom = $api.domAll('.aaa');
+                    for (var i in dom) {
+                        if (dom[i]) {
+                            dom[i].innerHTML = '未加入任何节点.';
+                        }
+                    }
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+        });
+    }
+
+    function user_message_index() {
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/user_message_index'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var dats = ret.data;
+                    $api.html($api.byId('message_list'), '');
+                    for (var key in dats) {
+                        var id = dats[key].id;
+                        var tip = dats[key].tip;
+                        var color = dats[key].color;
+                        var title = dats[key].title;
+                        $api.append($api.byId('message_list'), __message(dats[key]));
+                    }
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+        });
+    }
+
+    function __message(data) { data
+        str = '<li onclick="open_c2c_my(\'single_message\',\'' + Enc($api.jsonToStr(data)) + '\');"><span class="tag" style="background-color: ' + data.color + ';">' + data.tip + '</span>';
+        str += '<span class="subtitle">' + data.title + '</span></li>';
+        return str;
+    }
+</script>

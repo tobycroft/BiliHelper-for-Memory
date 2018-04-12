@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>云API</title>
+        <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+        <style>
+            .empty {
+                text-align: center;
+                padding: 120px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-dark">
+            <div class="aui-pull-left" onclick="closepage()">
+                <span class="aui-iconfont aui-icon-left"></span> 返回
+            </div>
+            <div class="aui-title">
+                助手密码预更新
+            </div>
+        </header>
+        <div class="aui-form">
+            <div class="aui-input-row">
+                <i class="aui-input-addon  aui-iconfont aui-icon-people"></i>
+                <input id="username" type="tel" class="aui-input" placeholder="请输入登陆助手用的帐号">
+            </div>
+            <div class="aui-input-row">
+                <i class="aui-input-addon  aui-iconfont aui-icon-lock"></i>
+                <input id="password" type="password" class="aui-input" placeholder="请输入您将会在B站修改的密码">
+            </div>
+            <div class="aui-input-row">
+                <i class="aui-input-addon  aui-iconfont aui-icon-lock"></i>
+                <input id="password2" type="password" class="aui-input" placeholder="请输入您将会在B站修改的密码">
+            </div>
+            <div class="aui-btn-row">
+                <div class="aui-btn aui-btn-success" onclick="change()">
+                    确认
+                </div>
+                <div class="aui-btn aui-btn-warning" onclick="closepage()">
+                    取消
+                </div>
+            </div>
+        </div>
+        <div class="aui-aui-content">
+            <ul class="aui-list-view">
+                <li class="aui-list-view-cell aui-img">
+                    <div class="aui-img-body">
+                        提示：
+                        <p class="aui-ellipsis-4">
+                            尊敬的用户请您务必注意，请在更新B站密码前，先更新助手的密码。
+                            <br>
+                            如果您先更新B站密码再来更新助手密码，有可能导致助手出现不能登陆，助手帐号登陆时显示Go die的问题。
+                            <br>
+                            这会导致您同时失去使用助手PC版本和APP版本的权利，所以请您务必先在本页面更新助手密码哦~
+                            <br>
+                            更新密码之后助手帐号会退出，请您不要立即重新登陆，否则您的帐号会立刻进入不受欢迎用户的列表，您就需要联系我们的管理员进行帐号恢复了！
+                            <br>
+                            请您在B站密码更新后，重新登陆APP，届时功能将不会受到任何影响哦~
+                        </p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </body>
+<script src="../script/api.js"></script>
+<script src="../script/common.js"></script>
+    
+    <script type="text/javascript">
+        apiready = function() {
+            $api.fixStatusBar($api.dom('header'));
+            api.setStatusBarStyle({
+                style : 'dark',
+                color : '#34495e'
+            });
+            var username = $api.byId('username');
+            var password = $api.byId('password');
+            var password2 = $api.byId('password2');
+            if ($api.getStorage('username')) {
+                $api.val(username, $api.getStorage('username'));
+            }
+        }
+        function change() {
+            var username = $api.byId('username');
+            var password = $api.byId('password');
+            var password2 = $api.byId('password2');
+            if (!$api.val(username)) {
+                alert('请填写帐号');
+            } else if ($api.val(password) != $api.val(password2)) {
+                alert('两次密码输入不一样');
+            } else if(!$api.val(password)){
+                alert('请输入密码');
+            } else if($api.val(password).length<6){
+                alert('B站不允许这么短的密码');
+            }else {
+                change_pass();
+            }
+        }
+
+        function change_pass() {
+            var username = $api.byId('username');
+            var password = $api.byId('password');
+            var password2 = $api.byId('password2');
+            api.ajax({
+                url : urladdress('/index/api/v1/act/change_pass'),
+                method : 'post',
+                data : {
+                    values : {
+                        username : get_userName(),
+                        token : get_userToken(),
+                        password : $api.val(password)
+                    }
+                }
+            }, function(ret, err) {
+                if (ret.code == '0') {
+                    api.alert({
+                        msg : ret.data
+                    });
+                    logout();
+                    closepage();
+                } else if (ret.code == '-1') {
+                    logout();
+                    closepage();
+                } else {
+                    api.alert({
+                        msg : ret.data
+                    });
+                }
+            });
+        }
+    </script>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>title</title>
+        <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/common.css"/>
+        <style>
+            body {
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-info">
+            <a class="aui-pull-left" onclick="cls()"> <span class="aui-iconfont aui-icon-left"></span> 返回 </a>
+            <div class="aui-title">
+                推送控制
+            </div>
+        </header>
+        <ul class="aui-list-view aui-in">
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-edit aui-bg-info"></i>推送总开关
+                <input type="checkbox" class="aui-switch aui-switch-primary aui-pull-right" checked id="main">
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-edit aui-bg-info"></i>离线启动通知
+                <input type="checkbox" class="aui-switch aui-switch-primary aui-pull-right" checked id="start">
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-edit aui-bg-info"></i>离线关闭通知
+                <input type="checkbox" class="aui-switch aui-switch-primary aui-pull-right" checked id="stop">
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-edit aui-bg-info"></i>今日奖励汇总
+                <input type="checkbox" class="aui-switch aui-switch-primary aui-pull-right" checked id="daily">
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-emoji aui-bg-success"></i>签到第一奖励推送
+                <input type="checkbox" class="aui-switch aui-switch-primary aui-pull-right" checked id="reward">
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-favor aui-bg-danger"></i>剩余时间不足60分钟提示
+                <input type="checkbox" class="aui-switch aui-switch-primary aui-pull-right" checked id="sixty">
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-like aui-bg-warning"></i>剩余时间不足15分钟提示
+                <input type="checkbox" class="aui-switch aui-switch-primary aui-pull-right" checked id="fifteen">
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-shop aui-bg-success"></i>离线被迫关闭通知
+                <input type="checkbox" class="aui-switch aui-switch-primary aui-pull-right" checked id="one">
+            </li>
+        </ul>
+        <div class="aui-btn aui-btn-block" onclick="set()">
+            保存并退出
+        </div>
+    </body>
+    <script src="../script/api.js"></script>
+    <script src="../script/common.js"></script>
+    <script type="text/javascript">
+        apiready = function() {
+            $api.fixStatusBar($api.dom('header'));
+            api.setCustomRefreshHeaderInfo({
+                //          loadingImg : 'widget://image/refresh.png',
+                bgColor : '#ccc',
+                textColor : '#fff',
+                textDown : '下拉刷新...',
+                textUp : '松开刷新...'
+            }, function(ret, err) {
+                //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+                get();
+                api.refreshHeaderLoadDone();
+            });
+            get();
+        }
+        function get() {
+            api.ajax({
+                url : urladdress('/index/api/v3/act/push'),
+                method : 'post',
+                data : {
+                    values : {
+                        username : get_userName(),
+                        token : get_userToken(),
+                    }
+                }
+            }, function(ret, err) {
+                if (ret.code == '0') {
+                    $api.byId('main').checked = ret.data.main;
+                    $api.byId('start').checked = ret.data.start;
+                    $api.byId('stop').checked = ret.data.stop;
+                    $api.byId('daily').checked = ret.data.daily;
+                    $api.byId('reward').checked = ret.data.reward;
+                    $api.byId('sixty').checked = ret.data.sixty;
+                    $api.byId('fifteen').checked = ret.data.fifteen;
+                    $api.byId('one').checked = ret.data.one;
+                } else {
+                    api.toast({
+                        msg : '推送状态获取失败'
+                    });
+                }
+            });
+        }
+
+        function set() {
+            datas = new Object();
+            datas.main = $api.byId('main').checked;
+            datas.start = $api.byId('start').checked;
+            datas.stop = $api.byId('stop').checked;
+            datas.daily = $api.byId('daily').checked;
+            datas.reward = $api.byId('reward').checked;
+            datas.sixty = $api.byId('sixty').checked;
+            datas.fifteen = $api.byId('fifteen').checked;
+            datas.one = $api.byId('one').checked;
+            api.ajax({
+                url : urladdress('/index/api/v3/act/push_set'),
+                method : 'post',
+                data : {
+                    values : {
+                        username : get_userName(),
+                        token : get_userToken(),
+                        dat : JSON.stringify(datas),
+                    }
+                },
+            }, function(ret, err) {
+                if (ret.code == '0') {
+                    api.toast({
+                        msg : ret.data
+                    });
+                    api.closeWin();
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            });
+        }
+
+        function cls() {
+            api.closeWin();
+        }
+    </script>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>title</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+        <style>
+            body {
+            }
+            em {
+                margin-right: 30px;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-info">
+            <a class="aui-pull-left" onclick="closepage()"> <span class="aui-iconfont aui-icon-left"></span> 返回 </a>
+            <div class="aui-title">
+                用户审核
+            </div>
+        </header>
+        <div class="aui-content">
+            <ul class="aui-user-view" id="server_list">
+                <!--              <li class="aui-user-view-cell aui-img">
+                <img class="aui-img-object aui-pull-left" src="../../image/logo/c2c-small.jpg">
+                <div class="aui-img-body aui-arrow-right">
+                <span>Tuuz</span>
+                <p class="aui-ellipsis-1">
+                待审核
+                </p>
+                </div>
+                </li>-->
+            </ul>
+            <div class="aui-tips" id="no_server">
+                <div class="aui-tips-content aui-ellipsis-1" >
+                    <i class="aui-iconfont aui-icon-warnfill"></i>
+                    暂时还没有人申请加入
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="../../script/api.js"></script>
+    <script src="../../script/common.js"></script>
+    <script src="../../script/c2c.js"></script>
+    <script>
+        apiready = function() {
+            $api.fixStatusBar($api.dom('header'));
+            api.setCustomRefreshHeaderInfo({
+                //          loadingImg : 'widget://image/refresh.png',
+                bgColor : '#ccc',
+                textColor : '#fff',
+                textDown : '下拉刷新...',
+                textUp : '松开刷新...'
+            }, function(ret, err) {
+                //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+                server_list();
+                api.refreshHeaderLoadDone();
+            });
+            server_list();
+            api.addEventListener({
+                name : 'server_list'
+            }, function(ret, err) {
+                server_list();
+            });
+        }
+        function server_list() {
+            showProgress();
+            api.ajax({
+                url : urladdress('/index/c2c/v1/act/verify_user_list'),
+                method : 'post',
+                data : {
+                    values : {
+                        username : get_userName(),
+                        token : get_userToken(),
+                    }
+                }
+            }, function(ret, err) {
+                if (ret) {
+                    if (ret.code == '0') {
+                        var dats = ret.data;
+                        $api.html($api.byId('server_list'), '');
+                        for (var i in dats) {
+                            $api.append($api.byId('server_list'), __strr(dats[i]));
+                        }
+                        if (dats.length > 0) {
+                            $api.attr($api.byId('no_server'), 'style', 'display: none');
+                        }
+                    } else if (ret.code == '-1') {
+                        logout();
+                    } else {
+                        api.toast({
+                            msg : ret.data
+                        });
+                    }
+                }
+                hideProgress();
+            });
+        }
+
+        function user_info(data) {
+            showProgress();
+            var data = $api.strToJson(De(data));
+            api.ajax({
+                url : urladdress('/index/c2c/admin/act/get_userinfo'),
+                method : 'post',
+                data : {
+                    values : {
+                        username : get_userName(),
+                        token : get_userToken(),
+                        data : data
+                    }
+                }
+            }, function(ret, err) {
+                if (ret) {
+                    if (ret.code == '0') {
+                        var dats = ret.data;
+                        api.openWin({
+                            name : 'user_info',
+                            url : 'user_info.html',
+                            pageParam : data
+                        });
+                    } else if (ret.code == '-1') {
+                        logout();
+                    } else {
+                        api.toast({
+                            msg : ret.data
+                        });
+                    }
+                }
+                hideProgress();
+            });
+        }
+
+        function __strr(data) {
+            if (!data.s_face) {
+                data.s_face = '../../image/logo/c2c-small.jpg';
+            }
+            var ob = new Object();
+            ob.uid = data.uid;
+            ob.id = data.id;
+            ob.sid = data.sid;
+            var str = '<li class="aui-user-view-cell aui-img" onclick="user_info(\'' + Enc($api.jsonToStr(data)) + '\')"><img class="aui-img-object aui-pull-left" src="' + data.s_face + '"><div class="aui-img-body aui-arrow-right">';
+            str += '<span>' + data.uname + '</span><p class="aui-ellipsis-1">';
+            str += '待审核';
+            str += '</p></div></li>';
+            return str;
+        }
+    </script>

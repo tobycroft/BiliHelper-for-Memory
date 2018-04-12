@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>title</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+        <style>
+            body {
+            }
+            .ads {
+                margin: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-info">
+            <a class="aui-pull-left" onclick="closepage()"> <span class="aui-iconfont aui-icon-left"></span> 返回 </a>
+            <div class="aui-title">
+                用户管理
+            </div>
+        </header>
+        <ul class="aui-list-view aui-in">
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-edit aui-bg-info"></i>头像：<span id="face_1"></span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-shop aui-bg-success"></i>用户名：<span id="uname">uname</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-emoji aui-bg-success"></i>用户等级：<span id="user_level">user_level</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-emoji aui-bg-success"></i>性别（可能有诈）：<span id="sex_1">sex</span>
+            </li>
+            <li class="aui-list-view-cell">
+                <i class="aui-iconfont aui-icon-like aui-bg-warning"></i>资料日期：<span id="date">date</span>
+            </li>
+            <div class="aui-aui-content">
+                <ul class="aui-list-view">
+                    <li class="aui-list-view-cell aui-img">
+                        <div class="aui-img-body">
+                            加入申请留言信息
+                            <p class="aui-ellipsis-4" id="message">
+                                mess
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="aui-input-row">
+                <span class="aui-input-addon">挂机时长（天）：</span>
+                <input type="number" class="aui-input" placeholder="给30天的挂机时间就输入30" value="1" id="times">
+            </div>
+            <!--        	<div class="aui-input-row">
+            <span class="aui-input-addon">age</span>
+            <div class="aui-range">
+            <input type="range" class="aui-range-primary" value="30" max="100" min="1" step="1" id="range" />
+            </div>
+            </div>-->
+            <div class="aui-btn-row">
+                <div class="aui-btn aui-btn-danger ads" id="kick" style="display: none" onclick="kick_user()">
+                    踢出
+                </div>
+                <div class="aui-btn aui-btn-danger ads" onclick="bann();" style="display: none" id="bann1">
+                    加入黑名单
+                </div>
+                <div class="aui-btn aui-btn-success ads" id="okay">
+                    同意
+                </div>
+                <div class="aui-btn aui-btn-warning ads" onclick="reject();" style="display: none" id="ignore">
+                    拒绝
+                </div>
+                <div class="aui-btn aui-btn-danger ads" onclick="bann();" style="display: none" id="bann">
+                    加入黑名单
+                </div>
+            </div>
+            </div>
+    </body>
+</html>
+<script src="../../script/api.js"></script>
+<script src="../../script/common.js"></script>
+<script src="../../script/c2c.js"></script>
+<script>
+    apiready = function() {
+        $api.fixStatusBar($api.dom('header'));
+        api.setCustomRefreshHeaderInfo({
+            //          loadingImg : 'widget://image/refresh.png',
+            bgColor : '#ccc',
+            textColor : '#fff',
+            textDown : '下拉刷新...',
+            textUp : '松开刷新...'
+        }, function(ret, err) {
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            get_admin();
+            api.refreshHeaderLoadDone();
+        });
+        get_admin();
+    }
+    function get_admin() {
+        showProgress();
+        api.ajax({
+            url : urladdress('/index/c2c/admin/act/get_userinfo'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                    data : api.pageParam,
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var dats = ret.data;
+                    for (var key in dats) {
+                        if ($api.byId(key)) {
+                            $api.html($api.byId(key), dats[key]);
+                            //                  $api.attr($api.byId(key), 'value', dats[key]);
+                            //                                  $api.val($api.byId(key), dats[key]);
+                        }
+                    }
+                    $api.html($api.byId('sex_1'), (dats['sex'] == '0') ? '男' : '女');
+                    $api.html($api.byId('face_1'), '<img src="' + dats.face + '" />');
+                    var okay = $api.byId('okay');
+                    var kick = $api.byId('kick');
+                    var ignore = $api.byId('ignore');
+                    var bann1 = $api.byId('bann1');
+                    var bann = $api.byId('bann');
+                    if (api.pageParam['agreed'] == 1) {
+                        $api.val($api.byId('times'), api.pageParam['left'] + 1);
+                        $api.attr(okay, 'onclick', 'change_user();');
+                        $api.attr(kick, 'style', '');
+                        $api.attr(bann1, 'style', '');
+                        $api.attr(ignore, 'style', 'display:none');
+                        $api.attr(bann, 'style', 'display:none');
+                        $api.html(okay, '修改并保存');
+                    } else {
+                        $api.attr(okay, 'onclick', 'agreed_user();');
+                        $api.attr(bann1, 'style', 'display:none');
+                        $api.attr(kick, 'style', 'display:none');
+                        $api.attr(ignore, 'style', '');
+                        $api.attr(bann, 'style', '');
+                        $api.html(okay, '同意该用户加入');
+                    }
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function agreed_user() {
+        showProgress();
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/agreed_user'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                    data : {
+                        "all" : api.pageParam,
+                        "time" : $api.val($api.byId('times'))
+                    }
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var dats = ret.data;
+                    alert(dats);
+                    api.sendEvent({
+                        name : 'server_list'
+                    });
+                    api.sendEvent({
+                        name : 'c2c'
+                    });
+                    closepage();
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    console.log($api.jsonToStr(ret.data));
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function change_user() {
+        showProgress();
+        api.ajax({
+            url : urladdress('/index/c2c/v1/act/change_user'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                    data : {
+                        "all" : api.pageParam,
+                        "time" : $api.val($api.byId('times'))
+                    }
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var dats = ret.data;
+                    alert(dats);
+                    api.sendEvent({
+                        name : 'server_list'
+                    });
+                    api.sendEvent({
+                        name : 'c2c'
+                    });
+                    closepage();
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    console.log($api.jsonToStr(ret.data));
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function kick_user() {
+        showProgress();
+        api.ajax({
+            url : urladdress('/index/c2c/admin/act/kick_user'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                    data : api.pageParam
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var dats = ret.data;
+                    alert(dats);
+                    api.sendEvent({
+                        name : 'server_list'
+                    });
+                    api.sendEvent({
+                        name : 'c2c'
+                    });
+                    closepage();
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    console.log($api.jsonToStr(ret.data));
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function reject() {
+        showProgress();
+        api.ajax({
+            url : urladdress('/index/c2c/admin/act/reject_user'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                    data : api.pageParam
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var dats = ret.data;
+                    alert(dats);
+                    api.sendEvent({
+                        name : 'server_list'
+                    });
+                    api.sendEvent({
+                        name : 'c2c'
+                    });
+                    closepage();
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    console.log($api.jsonToStr(ret.data));
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+
+    function bann() {
+        showProgress();
+        api.ajax({
+            url : urladdress('/index/c2c/admin/act/ban_user'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                    data : api.pageParam
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    var dats = ret.data;
+                    alert(dats);
+                    api.sendEvent({
+                        name : 'server_list'
+                    });
+                    api.sendEvent({
+                        name : 'c2c'
+                    });
+                    closepage();
+                } else if (ret.code == '-1') {
+                    logout();
+                } else {
+                    console.log($api.jsonToStr(ret.data));
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+            hideProgress();
+        });
+    }
+</script>

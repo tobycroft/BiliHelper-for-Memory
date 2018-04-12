@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>window</title>
+        <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+        <style>
+            body, html {
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-info">
+            <a class="aui-pull-left" onclick="closepage()"> <span class="aui-iconfont aui-icon-left"></span> 返回 </a>
+            <div class="aui-title">
+                系统设置
+            </div>
+        </header>
+        <div class="aui-content">
+            <ul class="aui-list-view">
+                <li class="aui-list-view-cell aui-img aui-counter-list">
+                    <!--<img class="aui-img-object aui-pull-left" src="../image/aui/demo4.png">-->
+                    <div class="aui-img-body">
+                        <div class="aui-tab aui-tab-dark">
+                            线路选择
+                            <ul class="aui-tab-nav aui-tab-border" id="">
+                                <li id="auto" class="active" onclick="line_set('auto')">
+                                    自动模式
+                                </li>
+                                <li id="uni" onclick="line_set('uni')">
+                                    联通双线
+                                </li>
+                                <li id="tele" onclick="line_set('tele')">
+                                    电信单线
+                                </li>
+                            </ul>
+                            （设定后需要重启APP，推荐自动或联通）
+                        </div>
+                    </div>
+                </li>
+                <div class="aui-form">
+                    <div class="aui-input-row aui-warning">
+                        <label class="aui-input-addon">停止抢辣条的时间</label>
+                        <input type="text" class="aui-input" value="1:30" id="end_time">
+                        <i class="aui-input-addon aui-iconfont aui-icon-warnfill"></i>
+                    </div>
+                    <div class="aui-input-row aui-success">
+                        <label class="aui-input-addon">开始抢辣条的时间</label>
+                        <input type="text" class="aui-input" value="3:30" id="start_time">
+                        <i class="aui-input-addon aui-iconfont aui-icon-roundcheckfill"></i>
+                    </div>
+                    <div class="aui-btn-row">
+                        <div class="aui-btn aui-btn-block aui-btn-info" onclick="set_time()">
+                            确认
+                        </div>
+                    </div>
+                </div>
+                <li class="aui-list-view-cell aui-img aui-counter-list">
+                    <img class="aui-img-object aui-pull-left" src="../image/aui/demo4.png">
+                    <div class="aui-img-body">
+                        心跳延迟
+                        <div class="aui-counter-box">
+                            <div class="aui-pull-left aui-text-danger">
+                                两次心跳的间隔
+                            </div>
+                            <div class="aui-counter aui-danger aui-pull-right">
+                                <div class="aui-counter-minus aui-disabled"></div>
+                                <input class="aui-counter-input" type="text" value="" id="heart_delay">
+                                <div class="aui-counter-plus"></div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-view-cell aui-img aui-counter-list">
+                    <img class="aui-img-object aui-pull-left" src="../image/aui/demo5.png">
+                    <div class="aui-img-body">
+                        银瓜子获取延迟
+                        <div class="aui-counter-box">
+                            <div class="aui-pull-left aui-text-danger">
+                                300秒最好
+                            </div>
+                            <div class="aui-counter aui-warning aui-pull-right">
+                                <div class="aui-counter-minus aui-disabled"></div>
+                                <input class="aui-counter-input" type="text" value="" id="silver_delay">
+                                <div class="aui-counter-plus"></div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-view-cell aui-img aui-counter-list">
+                    <img class="aui-img-object aui-pull-left" src="../image/aui/demo2.png">
+                    <div class="aui-img-body">
+                        小电视获取延迟
+                        <div class="aui-counter-box">
+                            <div class="aui-pull-left aui-text-danger">
+                                不要大于240秒
+                            </div>
+                            <div class="aui-counter aui-info aui-pull-right">
+                                <div class="aui-counter-minus aui-disabled"></div>
+                                <input class="aui-counter-input" type="text" value="" id="tv_delay">
+                                <div class="aui-counter-plus"></div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-view-cell aui-img aui-counter-list">
+                    <img class="aui-img-object aui-pull-left" src="../image/aui/demo2.png">
+                    <div class="aui-img-body">
+                        活动获取延迟
+                        <div class="aui-counter-box">
+                            <div class="aui-pull-left aui-text-danger">
+                                不要大于60秒
+                            </div>
+                            <div class="aui-counter aui-info aui-pull-right">
+                                <div class="aui-counter-minus aui-disabled"></div>
+                                <input class="aui-counter-input" type="text" value="" id="huodong_delay">
+                                <div class="aui-counter-plus"></div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-view-cell aui-img aui-counter-list">
+                    <img class="aui-img-object aui-pull-left" src="../image/aui/demo2.png">
+                    <div class="aui-img-body">
+                        首页刷新延迟
+                        <div class="aui-counter-box">
+                            <div class="aui-pull-left aui-text-danger">
+                                不要设定0秒!
+                            </div>
+                            <div class="aui-counter aui-info aui-pull-right">
+                                <div class="aui-counter-minus aui-disabled"></div>
+                                <input class="aui-counter-input" type="text" value="" id="refresh_delay">
+                                <div class="aui-counter-plus"></div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-view-cell aui-img aui-counter-list">
+                    <img class="aui-img-object aui-pull-left" src="../image/aui/demo2.png">
+                    <div class="aui-img-body">
+                        时光机间隔10-60秒
+                        <div class="aui-counter-box">
+                            <div class="aui-pull-left aui-text-danger">
+                                太小很耗流量
+                            </div>
+                            <div class="aui-counter aui-info aui-pull-right">
+                                <div class="aui-counter-minus aui-disabled"></div>
+                                <input class="aui-counter-input" type="text" value="" id="timemachine_delay">
+                                <div class="aui-counter-plus"></div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="aui-btn-row">
+                <div class="aui-btn aui-btn-block aui-btn-info" onclick="setValue()">
+                    确认
+                </div>
+            </div>
+        </div>
+        </div>
+    </body>
+</html>
+<script src="../script/api.js"></script>
+<script src="../script/common.js"></script>
+<script src="../script/base.js"></script>
+<script>
+    apiready = function() {
+        $api.fixStatusBar($api.dom('header'));
+        api.setCustomRefreshHeaderInfo({
+            //          loadingImg : 'widget://image/refresh.png',
+            bgColor : '#ccc',
+            textColor : '#fff',
+            textDown : '下拉刷新...',
+            textUp : '松开刷新...'
+        }, function(ret, err) {
+            api.refreshHeaderLoadDone();
+            line();
+            get_time();
+            getValue();
+        });
+        api.addEventListener({
+            name : 'settings'
+        }, function(ret, err) {
+            if (ret) {
+            }
+        });
+        getValue();
+        get_time();
+        line();
+    }
+    function closepage() {
+        api.closeWin({
+        });
+    }
+
+    function line() {
+        var auto = $api.byId('auto');
+        var uni = $api.byId('uni');
+        var tele = $api.byId('tele');
+        $api.attr(uni, 'class', '');
+        $api.attr(tele, 'class', '');
+        $api.attr(auto, 'class', '');
+        if ($api.getStorage('server_select') == 'uni') {
+            $api.attr(uni, 'class', 'active');
+        } else if ($api.getStorage('server_select') == 'tele') {
+            $api.attr(tele, 'class', 'active');
+        } else if ($api.getStorage('server_select') == 'auto') {
+            $api.attr(auto, 'class', 'active');
+        } else {
+            $api.attr(auto, 'class', 'active');
+        }
+    }
+
+    function line_set(data) {
+        api.confirm({
+            title : '是否切换服务器',
+            msg : '切换服务器将有可能导致访问不稳定，建议您咨询管理员后再操作，如果如果您不了解，我们推荐您切换到联通服务器，避免与其他用户发生拥堵等情况，我们建议在您设定本选项后手动重启APP',
+            buttons : ['确定', '取消']
+        }, function(ret, err) {
+            var index = ret.buttonIndex;
+            if (index == '1') {
+                $api.setStorage('server_select', data);
+                line();
+            }
+        });
+    }
+
+    function getValue() {
+        var heart = $api.byId("heart_delay");
+        var silver = $api.byId("silver_delay");
+        var tv = $api.byId("tv_delay");
+        var huodong = $api.byId("huodong_delay");
+        var refresh = $api.byId("refresh_delay");
+        var timemachine = $api.byId("timemachine_delay");
+        $api.val(heart, heart_delay());
+        $api.val(silver, silver_delay());
+        $api.val(tv, tv_delay());
+        $api.val(huodong, huodong_delay());
+        $api.val(refresh, refresh_delay());
+        $api.val(timemachine, timemachine_delay());
+    }
+
+    function setValue() {
+        var heart = $api.byId("heart_delay");
+        var silver = $api.byId("silver_delay");
+        var tv = $api.byId("tv_delay");
+        var huodong = $api.byId("huodong_delay");
+        var refresh = $api.byId("refresh_delay");
+        var timemachine = $api.byId("timemachine_delay");
+        $api.setStorage("heart_delay", $api.val(heart));
+        $api.setStorage("silver_delay", $api.val(silver));
+        $api.setStorage("tv_delay", $api.val(tv));
+        $api.setStorage("huodong_delay", $api.val(huodong));
+        $api.setStorage("refresh_delay", $api.val(refresh));
+        $api.setStorage("timemachine_delay", $api.val(timemachine));
+        alert("设定成功");
+        closepage();
+    }
+
+    function get_time() {
+        api.ajax({
+            url : urladdress('/index/api/v5/act/get_time'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                }
+            },
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.code == '0') {
+                    $api.byId('start_time').value = ret.data.start_time;
+                    $api.byId('end_time').value = ret.data.end_time;
+                } else {
+                    api.toast({
+                        msg : ret.data
+                    });
+                }
+            }
+        });
+    }
+
+    function set_time() {
+        datas = new Object();
+        datas.start_time = $api.byId('start_time').value;
+        datas.end_time = $api.byId('end_time').value;
+        api.ajax({
+            url : urladdress('/index/api/v5/act/set_time'),
+            method : 'post',
+            data : {
+                values : {
+                    username : get_userName(),
+                    token : get_userToken(),
+                    dat : JSON.stringify(datas),
+                }
+            },
+        }, function(ret, err) {
+            if (ret.code == '0') {
+                alert(ret.data);
+                api.closeWin();
+            } else {
+                api.toast({
+                    msg : ret.data
+                });
+            }
+        });
+        closepage();
+    }
+</script>
